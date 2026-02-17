@@ -7,7 +7,8 @@ export const siteConfig = {
   location: '台灣',
   github: {
     url: 'https://github.com/DevinKWu',
-    username: '@DevinKWu'
+    username: '@DevinKWu',
+    repo: 'DevinKWu/devinkwu.github.io'
   }
 };
 

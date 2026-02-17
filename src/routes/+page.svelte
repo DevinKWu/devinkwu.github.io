@@ -6,6 +6,23 @@
   import GitHubIcon from '$lib/components/icons/GitHubIcon.svelte';
   import EmailIcon from '$lib/components/icons/EmailIcon.svelte';
   import LocationIcon from '$lib/components/icons/LocationIcon.svelte';
+
+  let formName = $state('');
+  let formEmail = $state('');
+  let formMessage = $state('');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const title = encodeURIComponent(`[聯絡] 來自 ${formName} 的訊息`);
+    const body = encodeURIComponent(
+      `**姓名：** ${formName}\n**Email：** ${formEmail}\n\n---\n\n${formMessage}`
+    );
+    const labels = encodeURIComponent('contact');
+    const url = `https://github.com/${siteConfig.github.repo}/issues/new?title=${title}&body=${body}&labels=${labels}`;
+
+    window.open(url, '_blank');
+  }
 </script>
 
 <svelte:head>
@@ -151,13 +168,15 @@
     </div>
 
     <div class="mt-12 max-w-lg mx-auto">
-      <form class="space-y-6">
+      <form class="space-y-6" onsubmit={handleSubmit}>
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
           <input
             type="text"
             id="name"
             name="name"
+            required
+            bind:value={formName}
             class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors"
             placeholder="請輸入您的姓名"
           />
@@ -168,6 +187,8 @@
             type="email"
             id="email"
             name="email"
+            required
+            bind:value={formEmail}
             class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors"
             placeholder="you@example.com"
           />
@@ -178,6 +199,8 @@
             id="message"
             name="message"
             rows="5"
+            required
+            bind:value={formMessage}
             class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors resize-none"
             placeholder="請輸入您的訊息..."
           ></textarea>
@@ -186,8 +209,12 @@
           type="submit"
           class="w-full rounded-xl bg-primary-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-primary-500/30 hover:bg-primary-700 hover:shadow-primary-500/40 transition-all duration-200"
         >
-          送出訊息
+          送出訊息（透過 GitHub Issue）
         </button>
+        <p class="text-xs text-gray-500 text-center">
+          點擊後將導向 GitHub 建立 Issue，需要 GitHub 帳號。<br />
+          提交的訊息將會公開顯示，請勿填寫敏感個人資訊。
+        </p>
       </form>
     </div>
 
