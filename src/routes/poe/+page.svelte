@@ -4,11 +4,35 @@
 </svelte:head>
 
 <script>
+  import { onMount } from 'svelte';
+
   let isAnimating = $state(false);
   let block1 = $state(null); // null = 未擲, 0 = 陽面, 1 = 陰面
   let block2 = $state(null);
   let prayer = $state('');
   let hasThrown = $state(false);
+
+  // 歷史紀錄：{ id, time, prayer, block1, block2, result }
+  let history = $state([]);
+  let historyLoaded = false;
+
+  onMount(() => {
+    try {
+      const saved = localStorage.getItem('poe-history');
+      if (saved) history = JSON.parse(saved);
+    } catch {}
+    historyLoaded = true;
+  });
+
+  $effect(() => {
+    if (historyLoaded) {
+      localStorage.setItem('poe-history', JSON.stringify(history));
+    }
+  });
+
+  function clearHistory() {
+    history = [];
+  }
 
   const result = $derived(
     block1 === null ? null :
@@ -50,9 +74,24 @@
     block2 = null;
 
     setTimeout(() => {
-      block1 = Math.floor(Math.random() * 2);
-      block2 = Math.floor(Math.random() * 2);
+      const b1 = Math.floor(Math.random() * 2);
+      const b2 = Math.floor(Math.random() * 2);
+      block1 = b1;
+      block2 = b2;
       isAnimating = false;
+
+      const res = b1 !== b2 ? 'sheng' : b1 === 0 ? 'yin' : 'xiao';
+      history = [
+        {
+          id: Date.now(),
+          time: new Date().toLocaleString('zh-TW', { hour12: false }),
+          prayer: prayer.trim(),
+          block1: b1,
+          block2: b2,
+          result: res,
+        },
+        ...history,
+      ].slice(0, 100);
     }, 1100);
   }
 </script>
@@ -216,6 +255,48 @@
           <div class="guide-item-meaning">再擲一次</div>
         </div>
       </div>
+    </div>
+
+    <!-- 歷史紀錄 -->
+    <div class="history-section">
+      <div class="history-header">
+        <h2 class="history-title">擲杯紀錄</h2>
+        {#if history.length > 0}
+          <button class="clear-btn" onclick={clearHistory}>清除紀錄</button>
+        {/if}
+      </div>
+
+      {#if history.length === 0}
+        <p class="history-empty">尚無擲杯紀錄</p>
+      {:else}
+        <ul class="history-list">
+          {#each history as entry (entry.id)}
+            <li class="history-entry history-entry-{entry.result}">
+              <div class="entry-meta">
+                <span class="entry-time">{entry.time}</span>
+                {#if entry.prayer}
+                  <span class="entry-prayer">「{entry.prayer}」</span>
+                {/if}
+              </div>
+              <div class="entry-result-row">
+                <div class="entry-blocks">
+                  <span class="mini-block {entry.block1 === 0 ? 'mini-yang' : 'mini-yin'}">
+                    {entry.block1 === 0 ? '陽' : '陰'}
+                  </span>
+                  <span class="entry-blocks-sep">·</span>
+                  <span class="mini-block {entry.block2 === 0 ? 'mini-yang' : 'mini-yin'}">
+                    {entry.block2 === 0 ? '陽' : '陰'}
+                  </span>
+                </div>
+                <span class="entry-arrow">→</span>
+                <span class="entry-result-name entry-result-{entry.result}">
+                  {resultMap[entry.result].name}
+                </span>
+              </div>
+            </li>
+          {/each}
+        </ul>
+      {/if}
     </div>
   </div>
 </div>
@@ -601,4 +682,155 @@
     font-size: 0.8rem;
     color: #78716c;
   }
+
+  /* 歷史紀錄 */
+  .history-section {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(68, 64, 60, 0.3);
+  }
+
+  .history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .history-title {
+    color: #57534e;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .clear-btn {
+    font-size: 0.7rem;
+    color: #57534e;
+    background: none;
+    border: 1px solid rgba(87, 83, 78, 0.35);
+    border-radius: 9999px;
+    padding: 0.2rem 0.75rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+
+  .clear-btn:hover {
+    color: #9ca3af;
+    border-color: rgba(156, 163, 175, 0.4);
+  }
+
+  .history-empty {
+    text-align: center;
+    color: #3f3c3a;
+    font-size: 0.85rem;
+    padding: 1.5rem 0;
+    letter-spacing: 0.05em;
+  }
+
+  .history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .history-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border-left: 3px solid transparent;
+    background: rgba(20, 15, 12, 0.5);
+    animation: entry-appear 0.3s ease-out;
+  }
+
+  @keyframes entry-appear {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .history-entry-sheng { border-left-color: rgba(52, 211, 153, 0.5); }
+  .history-entry-yin   { border-left-color: rgba(107, 114, 128, 0.4); }
+  .history-entry-xiao  { border-left-color: rgba(251, 191, 36, 0.45); }
+
+  .entry-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .entry-time {
+    font-size: 0.72rem;
+    color: #44403c;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+
+  .entry-prayer {
+    font-size: 0.78rem;
+    color: #78716c;
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 260px;
+  }
+
+  .entry-result-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .entry-blocks {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .entry-blocks-sep {
+    color: #292524;
+    font-size: 0.7rem;
+  }
+
+  .mini-block {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.25rem;
+    letter-spacing: 0.03em;
+  }
+
+  .mini-yang {
+    color: #ef4444;
+    background: rgba(220, 38, 38, 0.12);
+  }
+
+  .mini-yin {
+    color: #b45309;
+    background: rgba(146, 64, 14, 0.15);
+  }
+
+  .entry-arrow {
+    color: #3f3c3a;
+    font-size: 0.75rem;
+  }
+
+  .entry-result-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'Noto Sans TC', serif;
+    letter-spacing: 0.06em;
+  }
+
+  .entry-result-sheng { color: #34d399; }
+  .entry-result-yin   { color: #6b7280; }
+  .entry-result-xiao  { color: #fbbf24; }
 </style>
