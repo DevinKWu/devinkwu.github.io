@@ -13,10 +13,10 @@ export const siteConfig = {
 };
 
 export const navLinks = [
-  { href: '#about', label: '關於我' },
-  { href: '#skills', label: '技能' },
-  { href: '#projects', label: '作品集' },
-  { href: '#contact', label: '聯絡我' },
+  { href: '/#about', label: '關於我' },
+  { href: '/#skills', label: '技能' },
+  { href: '/#projects', label: '作品集' },
+  { href: '/#contact', label: '聯絡我' },
   { href: '/poe', label: '擲杯' }
 ];
 
