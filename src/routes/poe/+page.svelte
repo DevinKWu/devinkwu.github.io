@@ -107,10 +107,12 @@
 </svelte:head>
 
 <div class="poe-page">
-  <!-- 背景裝飾 -->
+  <!-- 背景光暈 -->
   <div class="bg-decor" aria-hidden="true">
-    <div class="bg-decor-circle bg-decor-circle-1"></div>
-    <div class="bg-decor-circle bg-decor-circle-2"></div>
+    <div class="bg-circle c1"></div>
+    <div class="bg-circle c2"></div>
+    <div class="bg-circle c3"></div>
+    <div class="bg-circle c4"></div>
   </div>
 
   <div class="content-wrapper">
@@ -118,8 +120,18 @@
     <header class="header">
       <a href="/" class="back-link">← 回首頁</a>
       <div class="title-block">
+        <div class="title-deco">
+          <span class="deco-line"></span>
+          <span class="deco-diamond">◆</span>
+          <span class="deco-line"></span>
+        </div>
         <h1 class="main-title">擲杯</h1>
         <p class="main-subtitle">傳統台灣廟宇問卜儀式</p>
+        <div class="title-deco title-deco-sm">
+          <span class="deco-line"></span>
+          <span class="deco-text">誠心問卜・神明指引</span>
+          <span class="deco-line"></span>
+        </div>
       </div>
     </header>
 
@@ -141,46 +153,68 @@
       <div class="block-container">
         <div class="block-wrapper {isAnimating ? 'animating' : ''}">
           {#if block1 === null}
-            <svg class="poe-svg dim" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="82" rx="50" ry="7" fill="rgba(0,0,0,0.25)"/>
-              <path d="M 10,72 A 50,62 0 0,1 110,72 L 110,78 Q 60,84 10,78 Z" fill="#4B2020"/>
-              <path d="M 10,72 A 50,62 0 0,1 110,72" fill="#6B2020"/>
-              <path d="M 30,50 A 28,32 0 0,1 90,50" fill="none" stroke="#7f3030" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+            <svg class="poe-svg poe-dim" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="104" rx="50" ry="5" fill="rgba(0,0,0,0.2)"/>
+              <path d="M 15,76 A 55,67 0 0,1 125,76 L 125,83 Q 70,91 15,83 Z" fill="#1C0808"/>
+              <path d="M 15,76 A 55,67 0 0,1 125,76" fill="#2A0E0E"/>
+              <path d="M 34,52 A 34,40 0 0,1 106,52" fill="none" stroke="rgba(80,35,35,0.4)" stroke-width="3" stroke-linecap="round"/>
             </svg>
           {:else if block1 === 0}
-            <!-- 陽面：紅色弓形，弧面朝上 -->
-            <svg class="poe-svg yang" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="82" rx="50" ry="7" fill="rgba(120,20,20,0.4)"/>
-              <path d="M 10,72 A 50,62 0 0,1 110,72 L 110,78 Q 60,86 10,78 Z" fill="#991B1B"/>
-              <path d="M 10,72 A 50,62 0 0,1 110,72" fill="#DC2626"/>
-              <path d="M 28,48 A 30,36 0 0,1 92,48" fill="none" stroke="#FCA5A5" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
-              <ellipse cx="60" cy="60" rx="18" ry="10" fill="#EF4444" opacity="0.3"/>
-              <text x="60" y="67" text-anchor="middle" fill="#7F1D1D" font-size="15" font-family="Noto Sans TC, serif" font-weight="bold">陽</text>
+            <!-- 陽面：弧面朝上，紅漆面 -->
+            <svg class="poe-svg poe-yang" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="104" rx="50" ry="5" fill="rgba(120,10,10,0.45)"/>
+              <!-- 底部厚度（立體感） -->
+              <path d="M 15,76 A 55,67 0 0,1 125,76 L 125,84 Q 70,93 15,84 Z" fill="#7F1D1D"/>
+              <!-- 主弧面 -->
+              <path d="M 15,76 A 55,67 0 0,1 125,76" fill="#C41C1C"/>
+              <!-- 中段漸亮（模擬凸面） -->
+              <ellipse cx="70" cy="57" rx="38" ry="16" fill="#DC2626" opacity="0.55"/>
+              <!-- 高光橢圓 -->
+              <ellipse cx="60" cy="45" rx="20" ry="9" fill="#EF4444" opacity="0.38" transform="rotate(-12,60,45)"/>
+              <!-- 線形高光 -->
+              <path d="M 38,42 A 22,26 0 0,1 90,40" fill="none" stroke="rgba(252,165,165,0.55)" stroke-width="3.5" stroke-linecap="round"/>
+              <!-- 文字 -->
+              <text x="70" y="76" text-anchor="middle" fill="rgba(254,226,226,0.88)" font-size="16" font-family="'Noto Serif TC',serif" font-weight="bold">陽</text>
             </svg>
           {:else if block1 === 1}
-            <!-- 陰面：木褐色，平面朝上（較平緩） -->
-            <svg class="poe-svg yin" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="82" rx="50" ry="7" fill="rgba(60,30,10,0.4)"/>
-              <path d="M 10,72 A 50,38 0 0,1 110,72 L 110,78 Q 60,86 10,78 Z" fill="#78350F"/>
-              <path d="M 10,72 A 50,38 0 0,1 110,72" fill="#92400E"/>
-              <ellipse cx="60" cy="68" rx="30" ry="8" fill="#6B2D0B" opacity="0.55"/>
-              <path d="M 25,66 A 35,24 0 0,0 95,66" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-              <text x="60" y="71" text-anchor="middle" fill="#D97706" font-size="15" font-family="Noto Sans TC, serif" font-weight="bold">陰</text>
+            <!-- 陰面：平面朝上，木紋面 -->
+            <svg class="poe-svg poe-yin" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="104" rx="50" ry="5" fill="rgba(40,18,4,0.45)"/>
+              <!-- 底部厚度 -->
+              <path d="M 15,76 A 55,40 0 0,1 125,76 L 125,83 Q 70,91 15,83 Z" fill="#4A1E06"/>
+              <!-- 主平面 -->
+              <path d="M 15,76 A 55,40 0 0,1 125,76" fill="#7C3810"/>
+              <!-- 木紋線條 -->
+              <path d="M 26,73 Q 70,65 114,73" fill="none" stroke="rgba(195,110,45,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M 31,68 Q 70,61 109,68" fill="none" stroke="rgba(195,110,45,0.27)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M 38,63 Q 70,56 102,63" fill="none" stroke="rgba(205,120,50,0.27)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M 20,77 Q 70,70 120,77" fill="none" stroke="rgba(155,75,25,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- 中心暖光 -->
+              <ellipse cx="70" cy="67" rx="28" ry="9" fill="rgba(175,88,30,0.14)"/>
+              <!-- 文字 -->
+              <text x="70" y="76" text-anchor="middle" fill="rgba(215,148,58,0.85)" font-size="16" font-family="'Noto Serif TC',serif" font-weight="bold">陰</text>
             </svg>
           {:else}
             <!-- 立面：直立不倒，神蹟 -->
-            <svg class="poe-svg li" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="84" rx="12" ry="3.5" fill="rgba(251,191,36,0.4)"/>
-              <path d="M 57,18 C 67,32 68,57 59,78 C 52,62 51,36 57,18 Z" fill="#7c2d12"/>
-              <path d="M 57,18 C 63,35 63,60 59,78" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-              <g opacity="0.6" stroke="#fbbf24" stroke-width="1.3" stroke-linecap="round">
-                <line x1="59" y1="13" x2="59" y2="6"/>
-                <line x1="65" y1="15" x2="69" y2="9"/>
-                <line x1="53" y1="15" x2="49" y2="9"/>
-                <line x1="69" y1="22" x2="74" y2="17"/>
-                <line x1="49" y1="22" x2="44" y2="17"/>
+            <svg class="poe-svg poe-li" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="103" rx="11" ry="3" fill="rgba(251,191,36,0.4)"/>
+              <!-- 杯身 -->
+              <path d="M 65,16 C 78,30 80,57 72,91 C 63,57 60,30 65,16 Z" fill="#6B2606"/>
+              <!-- 金色邊緣光 -->
+              <path d="M 65,16 C 75,34 77,60 72,91" fill="none" stroke="rgba(251,191,36,0.62)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- 頂部光暈 -->
+              <circle cx="70" cy="14" r="9" fill="rgba(251,191,36,0.1)"/>
+              <!-- 光芒 -->
+              <g stroke="#fbbf24" stroke-linecap="round" opacity="0.8">
+                <line x1="70" y1="10" x2="70" y2="2"   stroke-width="2"/>
+                <line x1="77" y1="13" x2="83" y2="5"   stroke-width="1.7"/>
+                <line x1="63" y1="13" x2="57" y2="5"   stroke-width="1.7"/>
+                <line x1="83" y1="22" x2="91" y2="14"  stroke-width="1.4"/>
+                <line x1="57" y1="22" x2="49" y2="14"  stroke-width="1.4"/>
+                <line x1="88" y1="34" x2="97" y2="28"  stroke-width="1.1"/>
+                <line x1="52" y1="34" x2="43" y2="28"  stroke-width="1.1"/>
               </g>
-              <text x="61" y="55" text-anchor="middle" fill="#fbbf24" font-size="14" font-family="Noto Sans TC, serif" font-weight="bold">立</text>
+              <text x="69" y="62" text-anchor="middle" fill="#fbbf24" font-size="15" font-family="'Noto Serif TC',serif" font-weight="bold">立</text>
             </svg>
           {/if}
         </div>
@@ -198,44 +232,50 @@
       <div class="block-container">
         <div class="block-wrapper {isAnimating ? 'animating animating-delay' : ''}">
           {#if block2 === null}
-            <svg class="poe-svg dim" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="82" rx="50" ry="7" fill="rgba(0,0,0,0.25)"/>
-              <path d="M 10,72 A 50,62 0 0,1 110,72 L 110,78 Q 60,84 10,78 Z" fill="#4B2020"/>
-              <path d="M 10,72 A 50,62 0 0,1 110,72" fill="#6B2020"/>
-              <path d="M 30,50 A 28,32 0 0,1 90,50" fill="none" stroke="#7f3030" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+            <svg class="poe-svg poe-dim" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="104" rx="50" ry="5" fill="rgba(0,0,0,0.2)"/>
+              <path d="M 15,76 A 55,67 0 0,1 125,76 L 125,83 Q 70,91 15,83 Z" fill="#1C0808"/>
+              <path d="M 15,76 A 55,67 0 0,1 125,76" fill="#2A0E0E"/>
+              <path d="M 34,52 A 34,40 0 0,1 106,52" fill="none" stroke="rgba(80,35,35,0.4)" stroke-width="3" stroke-linecap="round"/>
             </svg>
           {:else if block2 === 0}
-            <svg class="poe-svg yang" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="82" rx="50" ry="7" fill="rgba(120,20,20,0.4)"/>
-              <path d="M 10,72 A 50,62 0 0,1 110,72 L 110,78 Q 60,86 10,78 Z" fill="#991B1B"/>
-              <path d="M 10,72 A 50,62 0 0,1 110,72" fill="#DC2626"/>
-              <path d="M 28,48 A 30,36 0 0,1 92,48" fill="none" stroke="#FCA5A5" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
-              <ellipse cx="60" cy="60" rx="18" ry="10" fill="#EF4444" opacity="0.3"/>
-              <text x="60" y="67" text-anchor="middle" fill="#7F1D1D" font-size="15" font-family="Noto Sans TC, serif" font-weight="bold">陽</text>
+            <svg class="poe-svg poe-yang" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="104" rx="50" ry="5" fill="rgba(120,10,10,0.45)"/>
+              <path d="M 15,76 A 55,67 0 0,1 125,76 L 125,84 Q 70,93 15,84 Z" fill="#7F1D1D"/>
+              <path d="M 15,76 A 55,67 0 0,1 125,76" fill="#C41C1C"/>
+              <ellipse cx="70" cy="57" rx="38" ry="16" fill="#DC2626" opacity="0.55"/>
+              <ellipse cx="60" cy="45" rx="20" ry="9" fill="#EF4444" opacity="0.38" transform="rotate(-12,60,45)"/>
+              <path d="M 38,42 A 22,26 0 0,1 90,40" fill="none" stroke="rgba(252,165,165,0.55)" stroke-width="3.5" stroke-linecap="round"/>
+              <text x="70" y="76" text-anchor="middle" fill="rgba(254,226,226,0.88)" font-size="16" font-family="'Noto Serif TC',serif" font-weight="bold">陽</text>
             </svg>
           {:else if block2 === 1}
-            <svg class="poe-svg yin" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="82" rx="50" ry="7" fill="rgba(60,30,10,0.4)"/>
-              <path d="M 10,72 A 50,38 0 0,1 110,72 L 110,78 Q 60,86 10,78 Z" fill="#78350F"/>
-              <path d="M 10,72 A 50,38 0 0,1 110,72" fill="#92400E"/>
-              <ellipse cx="60" cy="68" rx="30" ry="8" fill="#6B2D0B" opacity="0.55"/>
-              <path d="M 25,66 A 35,24 0 0,0 95,66" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-              <text x="60" y="71" text-anchor="middle" fill="#D97706" font-size="15" font-family="Noto Sans TC, serif" font-weight="bold">陰</text>
+            <svg class="poe-svg poe-yin" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="104" rx="50" ry="5" fill="rgba(40,18,4,0.45)"/>
+              <path d="M 15,76 A 55,40 0 0,1 125,76 L 125,83 Q 70,91 15,83 Z" fill="#4A1E06"/>
+              <path d="M 15,76 A 55,40 0 0,1 125,76" fill="#7C3810"/>
+              <path d="M 26,73 Q 70,65 114,73" fill="none" stroke="rgba(195,110,45,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M 31,68 Q 70,61 109,68" fill="none" stroke="rgba(195,110,45,0.27)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M 38,63 Q 70,56 102,63" fill="none" stroke="rgba(205,120,50,0.27)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M 20,77 Q 70,70 120,77" fill="none" stroke="rgba(155,75,25,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+              <ellipse cx="70" cy="67" rx="28" ry="9" fill="rgba(175,88,30,0.14)"/>
+              <text x="70" y="76" text-anchor="middle" fill="rgba(215,148,58,0.85)" font-size="16" font-family="'Noto Serif TC',serif" font-weight="bold">陰</text>
             </svg>
           {:else}
-            <!-- 立面：直立不倒，神蹟 -->
-            <svg class="poe-svg li" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="84" rx="12" ry="3.5" fill="rgba(251,191,36,0.4)"/>
-              <path d="M 57,18 C 67,32 68,57 59,78 C 52,62 51,36 57,18 Z" fill="#7c2d12"/>
-              <path d="M 57,18 C 63,35 63,60 59,78" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-              <g opacity="0.6" stroke="#fbbf24" stroke-width="1.3" stroke-linecap="round">
-                <line x1="59" y1="13" x2="59" y2="6"/>
-                <line x1="65" y1="15" x2="69" y2="9"/>
-                <line x1="53" y1="15" x2="49" y2="9"/>
-                <line x1="69" y1="22" x2="74" y2="17"/>
-                <line x1="49" y1="22" x2="44" y2="17"/>
+            <svg class="poe-svg poe-li" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="103" rx="11" ry="3" fill="rgba(251,191,36,0.4)"/>
+              <path d="M 65,16 C 78,30 80,57 72,91 C 63,57 60,30 65,16 Z" fill="#6B2606"/>
+              <path d="M 65,16 C 75,34 77,60 72,91" fill="none" stroke="rgba(251,191,36,0.62)" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="70" cy="14" r="9" fill="rgba(251,191,36,0.1)"/>
+              <g stroke="#fbbf24" stroke-linecap="round" opacity="0.8">
+                <line x1="70" y1="10" x2="70" y2="2"   stroke-width="2"/>
+                <line x1="77" y1="13" x2="83" y2="5"   stroke-width="1.7"/>
+                <line x1="63" y1="13" x2="57" y2="5"   stroke-width="1.7"/>
+                <line x1="83" y1="22" x2="91" y2="14"  stroke-width="1.4"/>
+                <line x1="57" y1="22" x2="49" y2="14"  stroke-width="1.4"/>
+                <line x1="88" y1="34" x2="97" y2="28"  stroke-width="1.1"/>
+                <line x1="52" y1="34" x2="43" y2="28"  stroke-width="1.1"/>
               </g>
-              <text x="61" y="55" text-anchor="middle" fill="#fbbf24" font-size="14" font-family="Noto Sans TC, serif" font-weight="bold">立</text>
+              <text x="69" y="62" text-anchor="middle" fill="#fbbf24" font-size="15" font-family="'Noto Serif TC',serif" font-weight="bold">立</text>
             </svg>
           {/if}
         </div>
@@ -266,10 +306,12 @@
     <!-- 結果顯示 -->
     {#if resultInfo && !isAnimating}
       <div class="result-card {resultInfo.colorClass}">
-        <div class="result-name">{resultInfo.name}</div>
-        <div class="result-subtitle">{resultInfo.subtitle}</div>
-        <p class="result-message">{resultInfo.message}</p>
-        <div class="result-note">{resultInfo.note}</div>
+        <div class="result-inner">
+          <div class="result-name">{resultInfo.name}</div>
+          <div class="result-subtitle">{resultInfo.subtitle}</div>
+          <p class="result-message">{resultInfo.message}</p>
+          <div class="result-note">{resultInfo.note}</div>
+        </div>
       </div>
     {:else if !hasThrown}
       <div class="placeholder-text">誠心默念，點擊擲杯</div>
@@ -277,35 +319,49 @@
 
     <!-- 說明區 -->
     <div class="guide-section">
-      <h2 class="guide-title">擲杯說明</h2>
+      <h2 class="section-title">
+        <span class="section-line"></span>
+        擲杯說明
+        <span class="section-line"></span>
+      </h2>
       <div class="guide-grid">
         <div class="guide-item guide-sheng">
-          <div class="guide-item-name">聖杯</div>
-          <div class="guide-item-desc">一陽一陰</div>
-          <div class="guide-item-meaning">神明允許</div>
+          <div class="guide-icon">聖</div>
+          <div class="guide-name">聖杯</div>
+          <div class="guide-desc">一陽一陰</div>
+          <div class="guide-meaning">神明允許</div>
         </div>
         <div class="guide-item guide-yin">
-          <div class="guide-item-name">陰杯</div>
-          <div class="guide-item-desc">兩個平面</div>
-          <div class="guide-item-meaning">神明不允</div>
+          <div class="guide-icon">陰</div>
+          <div class="guide-name">陰杯</div>
+          <div class="guide-desc">兩個平面</div>
+          <div class="guide-meaning">神明不允</div>
         </div>
         <div class="guide-item guide-xiao">
-          <div class="guide-item-name">笑杯</div>
-          <div class="guide-item-desc">兩個弧面</div>
-          <div class="guide-item-meaning">再擲一次</div>
+          <div class="guide-icon">笑</div>
+          <div class="guide-name">笑杯</div>
+          <div class="guide-desc">兩個弧面</div>
+          <div class="guide-meaning">再擲一次</div>
         </div>
       </div>
       <div class="guide-item guide-li guide-li-full">
-        <div class="guide-item-name">立杯</div>
-        <div class="guide-item-desc">筊杯直立不倒，9007兆分之一</div>
-        <div class="guide-item-meaning">神蹟顯現，極為罕見</div>
+        <div class="guide-icon guide-li-icon">立</div>
+        <div class="guide-li-body">
+          <div class="guide-name">立杯</div>
+          <div class="guide-desc">筊杯直立不倒，9007兆分之一</div>
+          <div class="guide-meaning">神蹟顯現，極為罕見</div>
+        </div>
       </div>
     </div>
 
     <!-- 歷史紀錄 -->
     <div class="history-section">
       <div class="history-header">
-        <h2 class="history-title">擲杯紀錄</h2>
+        <h2 class="section-title">
+          <span class="section-line"></span>
+          擲杯紀錄
+          <span class="section-line"></span>
+        </h2>
         {#if history.length > 0}
           <button class="clear-btn" onclick={clearHistory}>清除紀錄</button>
         {/if}
@@ -328,13 +384,13 @@
                   <span class="mini-block {entry.block1 === 0 ? 'mini-yang' : entry.block1 === 1 ? 'mini-yin' : 'mini-li'}">
                     {entry.block1 === 0 ? '陽' : entry.block1 === 1 ? '陰' : '立'}
                   </span>
-                  <span class="entry-blocks-sep">·</span>
+                  <span class="entry-sep">·</span>
                   <span class="mini-block {entry.block2 === 0 ? 'mini-yang' : entry.block2 === 1 ? 'mini-yin' : 'mini-li'}">
                     {entry.block2 === 0 ? '陽' : entry.block2 === 1 ? '陰' : '立'}
                   </span>
                 </div>
                 <span class="entry-arrow">→</span>
-                <span class="entry-result-name entry-result-{entry.result}">
+                <span class="entry-result entry-result-{entry.result}">
                   {resultMap[entry.result].name}
                 </span>
               </div>
@@ -347,57 +403,72 @@
 </div>
 
 <style>
+  /* ── 整體頁面 ── */
   .poe-page {
     min-height: calc(100vh - 4rem);
-    background: #0a0608;
+    background: #080405;
     position: relative;
     overflow: hidden;
     display: flex;
     justify-content: center;
   }
 
+  /* ── 背景光暈 ── */
   .bg-decor {
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
 
-  .bg-decor-circle {
+  .bg-circle {
     position: absolute;
     border-radius: 9999px;
-    filter: blur(80px);
-    opacity: 0.12;
+    filter: blur(90px);
   }
 
-  .bg-decor-circle-1 {
-    width: 600px;
-    height: 600px;
-    background: #7f1d1d;
-    top: -100px;
-    left: 50%;
+  .c1 {
+    width: 720px; height: 720px;
+    background: radial-gradient(circle, #8B1A1A 0%, transparent 70%);
+    opacity: 0.13;
+    top: -180px; left: 50%;
     transform: translateX(-50%);
   }
 
-  .bg-decor-circle-2 {
-    width: 400px;
-    height: 400px;
-    background: #78350f;
-    bottom: 0;
-    right: -100px;
+  .c2 {
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, #78350f 0%, transparent 70%);
+    opacity: 0.1;
+    bottom: -60px; right: -100px;
   }
 
+  .c3 {
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, #92400e 0%, transparent 70%);
+    opacity: 0.09;
+    bottom: 28%; left: -90px;
+  }
+
+  .c4 {
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, #B91C1C 0%, transparent 70%);
+    opacity: 0.07;
+    top: 32%; right: 4%;
+  }
+
+  /* ── 內容容器 ── */
   .content-wrapper {
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 600px;
+    max-width: 620px;
     padding: 2rem 1.5rem 4rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 2.25rem;
   }
 
+  /* ── 標題 ── */
   .header {
     width: 100%;
     display: flex;
@@ -408,36 +479,63 @@
 
   .back-link {
     align-self: flex-start;
-    color: #a16207;
+    color: #92400e;
     font-size: 0.875rem;
     text-decoration: none;
+    letter-spacing: 0.03em;
     transition: color 0.2s;
   }
-  .back-link:hover {
-    color: #ca8a04;
+  .back-link:hover { color: #ca8a04; }
+
+  .title-block { text-align: center; }
+
+  /* 裝飾線 */
+  .title-deco {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    justify-content: center;
+    margin-bottom: 0.6rem;
+  }
+  .title-deco-sm { margin-top: 0.65rem; margin-bottom: 0; }
+
+  .deco-line {
+    display: block;
+    width: 44px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #7C2D12, transparent);
   }
 
-  .title-block {
-    text-align: center;
+  .deco-diamond { color: #7C2D12; font-size: 0.45rem; }
+
+  .deco-text {
+    color: #57534e;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    font-family: 'Noto Serif TC', serif;
   }
 
   .main-title {
-    font-size: 3.5rem;
+    font-size: 4.25rem;
     font-weight: 700;
-    color: #fbbf24;
-    letter-spacing: 0.1em;
-    line-height: 1.1;
-    font-family: 'Noto Sans TC', serif;
-    text-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
+    color: #FCD34D;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    font-family: 'Noto Serif TC', serif;
+    text-shadow:
+      0 0 30px rgba(251,191,36,0.35),
+      0 0 80px rgba(251,191,36,0.12);
   }
 
   .main-subtitle {
-    color: #6b7280;
-    font-size: 0.95rem;
-    margin-top: 0.25rem;
-    letter-spacing: 0.05em;
+    color: #57534e;
+    font-size: 0.88rem;
+    margin-top: 0.35rem;
+    letter-spacing: 0.1em;
+    font-family: 'Noto Serif TC', serif;
   }
 
+  /* ── 祈求欄 ── */
   .prayer-section {
     width: 100%;
     display: flex;
@@ -447,51 +545,50 @@
 
   .prayer-label {
     text-align: center;
-    color: #92400e;
-    font-size: 0.8rem;
-    letter-spacing: 0.05em;
+    color: #78350f;
+    font-size: 0.78rem;
+    letter-spacing: 0.07em;
+    font-family: 'Noto Serif TC', serif;
   }
 
   .prayer-input {
     width: 100%;
-    background: rgba(30, 10, 5, 0.6);
-    border: 1px solid rgba(120, 53, 15, 0.4);
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
+    background: rgba(18, 6, 2, 0.7);
+    border: 1px solid rgba(124, 45, 18, 0.35);
+    border-radius: 0.625rem;
+    padding: 0.8rem 1rem;
     color: #d6d3d1;
     font-size: 0.9rem;
     font-family: 'Noto Sans TC', sans-serif;
     resize: none;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
-
   .prayer-input:focus {
-    border-color: rgba(180, 83, 9, 0.6);
+    border-color: rgba(180, 83, 9, 0.55);
+    box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.08);
   }
+  .prayer-input::placeholder { color: #3a322e; }
 
-  .prayer-input::placeholder {
-    color: #44403c;
-  }
-
+  /* ── 筊杯展示 ── */
   .blocks-area {
     display: flex;
     align-items: flex-end;
-    gap: 2rem;
+    gap: 2.5rem;
     justify-content: center;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
   }
 
   .block-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.65rem;
   }
 
   .block-wrapper {
-    width: 130px;
-    height: 100px;
+    width: 152px;
+    height: 124px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -500,300 +597,380 @@
   .block-wrapper.animating {
     animation: poe-flip 1.1s ease-in-out;
   }
+  .block-wrapper.animating-delay { animation-delay: 0.08s; }
 
-  .block-wrapper.animating-delay {
-    animation-delay: 0.08s;
-  }
-
+  /* SVG 筊杯 */
   .poe-svg {
-    width: 120px;
-    height: 90px;
+    width: 140px;
+    height: 110px;
     transition: transform 0.3s;
   }
 
-  .poe-svg.dim {
-    opacity: 0.4;
+  .poe-dim {
+    opacity: 0.38;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
   }
 
-  .poe-svg.yang {
-    filter: drop-shadow(0 0 12px rgba(220, 38, 38, 0.5));
+  .poe-yang {
+    filter:
+      drop-shadow(0 5px 14px rgba(0,0,0,0.65))
+      drop-shadow(0 0 16px rgba(200,28,28,0.52));
   }
 
-  .poe-svg.yin {
-    filter: drop-shadow(0 0 8px rgba(146, 64, 14, 0.4));
+  .poe-yin {
+    filter:
+      drop-shadow(0 5px 14px rgba(0,0,0,0.65))
+      drop-shadow(0 0 10px rgba(140,55,10,0.38));
   }
 
-  .poe-svg.li {
-    filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.75));
+  .poe-li {
+    filter:
+      drop-shadow(0 5px 14px rgba(0,0,0,0.65))
+      drop-shadow(0 0 22px rgba(251,191,36,0.72));
     animation: li-glow 1s ease-in-out infinite alternate;
   }
 
   @keyframes li-glow {
-    from { filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5)); }
-    to   { filter: drop-shadow(0 0 22px rgba(251, 191, 36, 0.9)); }
+    from { filter: drop-shadow(0 5px 14px rgba(0,0,0,0.65)) drop-shadow(0 0 12px rgba(251,191,36,0.5)); }
+    to   { filter: drop-shadow(0 5px 14px rgba(0,0,0,0.65)) drop-shadow(0 0 30px rgba(251,191,36,0.9)); }
   }
 
   @keyframes poe-flip {
-    0%   { transform: translateY(0) rotate(0deg); }
-    20%  { transform: translateY(-60px) rotate(180deg); }
-    45%  { transform: translateY(-90px) rotate(360deg); }
-    70%  { transform: translateY(-40px) rotate(450deg); }
-    85%  { transform: translateY(-10px) rotate(520deg); }
-    100% { transform: translateY(0) rotate(540deg); }
+    0%   { transform: translateY(0)    rotate(0deg); }
+    20%  { transform: translateY(-68px) rotate(200deg); }
+    45%  { transform: translateY(-98px) rotate(372deg); }
+    70%  { transform: translateY(-44px) rotate(472deg); }
+    85%  { transform: translateY(-13px) rotate(532deg); }
+    100% { transform: translateY(0)    rotate(540deg); }
   }
 
   .block-label {
     font-size: 0.8rem;
-    letter-spacing: 0.05em;
-    font-weight: 500;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    font-family: 'Noto Serif TC', serif;
   }
-
-  .yang-label { color: #ef4444; }
+  .yang-label { color: #f87171; }
   .yin-label  { color: #b45309; }
-  .li-label   { color: #fbbf24; font-weight: 700; animation: li-pulse 0.8s ease-in-out infinite alternate; }
+  .li-label   {
+    color: #FCD34D;
+    font-weight: 700;
+    animation: li-pulse 0.85s ease-in-out infinite alternate;
+  }
 
   @keyframes li-pulse {
     from { opacity: 0.8; }
-    to   { opacity: 1; text-shadow: 0 0 8px rgba(251, 191, 36, 0.8); }
+    to   { opacity: 1; text-shadow: 0 0 10px rgba(251,191,36,0.9); }
   }
 
   .divider-icon {
-    color: #44403c;
-    font-size: 1.2rem;
-    padding-bottom: 1.5rem;
+    color: #3C2A12;
+    font-size: 0.95rem;
+    padding-bottom: 2rem;
   }
 
+  /* ── 擲杯按鈕 ── */
   .throw-btn {
-    padding: 0.875rem 3rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    font-family: 'Noto Sans TC', sans-serif;
-    letter-spacing: 0.15em;
-    color: #0a0608;
-    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 0.9rem 3.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    font-family: 'Noto Serif TC', serif;
+    letter-spacing: 0.2em;
+    color: #1C0800;
+    background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 45%, #B45309 100%);
     border: none;
     border-radius: 9999px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 4px 24px rgba(251, 191, 36, 0.25);
+    box-shadow:
+      0 4px 22px rgba(251,191,36,0.35),
+      0 0 0 1px rgba(251,191,36,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.2),
+      inset 0 -1px 0 rgba(0,0,0,0.15);
   }
+
+  /* 光澤掃過動畫 */
+  .throw-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -70%;
+    width: 45%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.55s ease;
+    pointer-events: none;
+  }
+  .throw-btn:hover:not(:disabled)::before { left: 160%; }
 
   .throw-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(251, 191, 36, 0.4);
+    box-shadow:
+      0 8px 32px rgba(251,191,36,0.48),
+      0 0 0 1px rgba(251,191,36,0.28),
+      inset 0 1px 0 rgba(255,255,255,0.25),
+      inset 0 -1px 0 rgba(0,0,0,0.15);
   }
-
-  .throw-btn:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  .throw-btn:disabled {
-    opacity: 0.7;
-    cursor: default;
-  }
+  .throw-btn:active:not(:disabled) { transform: translateY(0); }
+  .throw-btn:disabled { opacity: 0.65; cursor: default; }
 
   .btn-spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(10, 6, 8, 0.3);
-    border-top-color: #0a0608;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(28,8,0,0.3);
+    border-top-color: #1C0800;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
   }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
+  /* ── 結果卡片 ── */
   .result-card {
     width: 100%;
     border-radius: 1rem;
-    padding: 1.75rem;
+    padding: 2px;                        /* 外框留位給 inner */
+    animation: result-appear 0.42s ease-out;
+  }
+
+  .result-inner {
+    border-radius: 0.875rem;
+    padding: 1.85rem 1.75rem;
     text-align: center;
-    animation: result-appear 0.4s ease-out;
-    border: 1px solid transparent;
   }
 
   @keyframes result-appear {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* 立杯 */
   .result-li {
-    background: rgba(60, 40, 5, 0.4);
-    border-color: rgba(251, 191, 36, 0.6);
-    box-shadow: 0 0 40px rgba(251, 191, 36, 0.12);
-    animation: result-appear 0.4s ease-out, li-card-glow 1.5s ease-in-out infinite alternate;
+    background: linear-gradient(135deg,
+      rgba(251,191,36,0.28) 0%,
+      rgba(251,191,36,0.08) 100%);
+    border: 1px solid rgba(251,191,36,0.55);
+    box-shadow: 0 0 50px rgba(251,191,36,0.1);
+    animation: result-appear 0.42s ease-out, li-card-glow 1.6s ease-in-out infinite alternate;
   }
+  .result-li .result-inner  { background: rgba(28,15,2,0.55); }
+  .result-li .result-name   { color: #FCD34D; text-shadow: 0 0 24px rgba(251,191,36,0.55); }
+  .result-li .result-subtitle { color: #D97706; }
+  .result-li .result-note   { color: rgba(251,191,36,0.5); }
 
   @keyframes li-card-glow {
-    from { box-shadow: 0 0 20px rgba(251, 191, 36, 0.08); }
-    to   { box-shadow: 0 0 50px rgba(251, 191, 36, 0.22); }
+    from { box-shadow: 0 0 24px rgba(251,191,36,0.08); }
+    to   { box-shadow: 0 0 60px rgba(251,191,36,0.22); }
   }
 
-  .result-li .result-name { color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
-  .result-li .result-subtitle { color: #d97706; }
-  .result-li .result-note { color: #fbbf24; }
-
+  /* 聖杯 */
   .result-sheng {
-    background: rgba(6, 78, 59, 0.25);
-    border-color: rgba(16, 185, 129, 0.35);
+    background: linear-gradient(135deg,
+      rgba(16,185,129,0.16) 0%,
+      rgba(16,185,129,0.04) 100%);
+    border: 1px solid rgba(16,185,129,0.3);
   }
-  .result-yin {
-    background: rgba(30, 27, 25, 0.5);
-    border-color: rgba(87, 83, 78, 0.4);
-  }
-  .result-xiao {
-    background: rgba(120, 53, 15, 0.25);
-    border-color: rgba(217, 119, 6, 0.4);
-  }
+  .result-sheng .result-inner    { background: rgba(2,18,12,0.5); }
+  .result-sheng .result-name     { color: #34d399; }
+  .result-sheng .result-subtitle { color: #6ee7b7; }
+  .result-sheng .result-note     { color: rgba(52,211,153,0.5); }
 
-  .result-name {
-    font-size: 2.25rem;
-    font-weight: 700;
-    font-family: 'Noto Sans TC', serif;
-    letter-spacing: 0.1em;
-    line-height: 1;
-    margin-bottom: 0.25rem;
+  /* 陰杯 */
+  .result-yin {
+    background: linear-gradient(135deg,
+      rgba(87,83,78,0.18) 0%,
+      rgba(87,83,78,0.05) 100%);
+    border: 1px solid rgba(87,83,78,0.35);
   }
-  .result-sheng .result-name { color: #34d399; }
-  .result-yin  .result-name { color: #9ca3af; }
-  .result-xiao .result-name { color: #fbbf24; }
+  .result-yin .result-inner    { background: rgba(12,10,9,0.55); }
+  .result-yin .result-name     { color: #9ca3af; }
+  .result-yin .result-subtitle { color: #6b7280; }
+  .result-yin .result-note     { color: rgba(156,163,175,0.45); }
+
+  /* 笑杯 */
+  .result-xiao {
+    background: linear-gradient(135deg,
+      rgba(217,119,6,0.18) 0%,
+      rgba(217,119,6,0.05) 100%);
+    border: 1px solid rgba(217,119,6,0.35);
+  }
+  .result-xiao .result-inner    { background: rgba(18,10,2,0.5); }
+  .result-xiao .result-name     { color: #fbbf24; }
+  .result-xiao .result-subtitle { color: #d97706; }
+  .result-xiao .result-note     { color: rgba(251,191,36,0.45); }
+
+  /* 共用文字樣式 */
+  .result-name {
+    font-size: 2.6rem;
+    font-weight: 700;
+    font-family: 'Noto Serif TC', serif;
+    letter-spacing: 0.14em;
+    line-height: 1;
+    margin-bottom: 0.35rem;
+  }
 
   .result-subtitle {
-    font-size: 0.9rem;
-    letter-spacing: 0.08em;
-    margin-bottom: 1rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.1rem;
+    font-family: 'Noto Serif TC', serif;
   }
-  .result-sheng .result-subtitle { color: #6ee7b7; }
-  .result-yin  .result-subtitle { color: #6b7280; }
-  .result-xiao .result-subtitle { color: #d97706; }
 
   .result-message {
-    color: #d6d3d1;
-    font-size: 0.95rem;
-    line-height: 1.75;
-    margin-bottom: 0.75rem;
+    color: #c4c0bc;
+    font-size: 0.94rem;
+    line-height: 1.9;
+    margin-bottom: 0.9rem;
   }
 
   .result-note {
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    opacity: 0.5;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    opacity: 1;
   }
-  .result-sheng .result-note { color: #34d399; }
-  .result-yin  .result-note { color: #9ca3af; }
-  .result-xiao .result-note { color: #fbbf24; }
 
   .placeholder-text {
-    color: #44403c;
-    font-size: 0.9rem;
-    letter-spacing: 0.05em;
+    color: #3a322e;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
     text-align: center;
-    padding: 1rem 0;
+    padding: 0.75rem 0;
+    font-family: 'Noto Serif TC', serif;
   }
 
+  /* ── 區塊標題 ── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+    color: #4a4540;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+    font-family: 'Noto Serif TC', serif;
+    white-space: nowrap;
+  }
+
+  .section-line {
+    display: block;
+    flex: 1;
+    max-width: 55px;
+    height: 1px;
+  }
+
+  .section-title .section-line:first-child {
+    background: linear-gradient(90deg, transparent, rgba(100,75,40,0.45));
+  }
+  .section-title .section-line:last-child {
+    background: linear-gradient(90deg, rgba(100,75,40,0.45), transparent);
+  }
+
+  /* ── 說明區 ── */
   .guide-section {
     width: 100%;
-    margin-top: 0.5rem;
     padding-top: 2rem;
-    border-top: 1px solid rgba(68, 64, 60, 0.3);
-  }
-
-  .guide-title {
-    text-align: center;
-    color: #57534e;
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
+    border-top: 1px solid rgba(68,55,40,0.22);
   }
 
   .guide-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
   }
 
   .guide-item {
     text-align: center;
-    padding: 0.875rem 0.5rem;
-    border-radius: 0.5rem;
+    padding: 1rem 0.5rem;
+    border-radius: 0.625rem;
     border: 1px solid transparent;
+    transition: transform 0.2s;
   }
+  .guide-item:hover { transform: translateY(-2px); }
 
-  .guide-li {
-    background: rgba(60, 40, 5, 0.3);
-    border-color: rgba(251, 191, 36, 0.35);
+  .guide-icon {
+    font-size: 1.3rem;
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    opacity: 0.88;
   }
-
-  .guide-li-full {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.25rem;
-    padding: 0.75rem 1rem;
-    margin-top: 0.25rem;
-  }
-
-  .guide-li-full .guide-item-name {
-    margin-bottom: 0;
-  }
-
-  .guide-li-full .guide-item-desc,
-  .guide-li-full .guide-item-meaning {
-    margin-bottom: 0;
-  }
-
-  .guide-li .guide-item-name { color: #fbbf24; }
-  .guide-li .guide-item-desc { color: #78716c; }
-  .guide-li .guide-item-meaning { color: #92400e; }
 
   .guide-sheng {
-    background: rgba(6, 78, 59, 0.15);
-    border-color: rgba(16, 185, 129, 0.2);
+    background: rgba(6,78,59,0.15);
+    border-color: rgba(16,185,129,0.22);
   }
+  .guide-sheng .guide-icon,
+  .guide-sheng .guide-name { color: #34d399; }
+
   .guide-yin {
-    background: rgba(30, 27, 25, 0.3);
-    border-color: rgba(87, 83, 78, 0.25);
+    background: rgba(25,22,20,0.4);
+    border-color: rgba(87,83,78,0.25);
   }
+  .guide-yin .guide-icon,
+  .guide-yin .guide-name { color: #9ca3af; }
+
   .guide-xiao {
-    background: rgba(120, 53, 15, 0.15);
-    border-color: rgba(217, 119, 6, 0.2);
+    background: rgba(120,53,15,0.15);
+    border-color: rgba(217,119,6,0.22);
+  }
+  .guide-xiao .guide-icon,
+  .guide-xiao .guide-name { color: #fbbf24; }
+
+  .guide-li {
+    background: rgba(48,30,2,0.32);
+    border-color: rgba(251,191,36,0.32);
+  }
+  .guide-li .guide-icon,
+  .guide-li .guide-name { color: #FCD34D; }
+  .guide-li .guide-desc    { color: #665e50; }
+  .guide-li .guide-meaning { color: #78430C; }
+
+  .guide-li-full {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1.25rem;
+    text-align: left;
   }
 
-  .guide-item-name {
+  .guide-li-icon {
+    font-size: 1.6rem;
+    min-width: 2rem;
+    text-align: center;
+    margin-bottom: 0;
+  }
+
+  .guide-li-body { flex: 1; }
+
+  .guide-name {
     font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.25rem;
-    font-family: 'Noto Sans TC', serif;
-  }
-  .guide-sheng .guide-item-name { color: #34d399; }
-  .guide-yin  .guide-item-name { color: #9ca3af; }
-  .guide-xiao .guide-item-name { color: #fbbf24; }
-
-  .guide-item-desc {
-    font-size: 0.75rem;
-    color: #57534e;
-    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.2rem;
+    font-family: 'Noto Serif TC', serif;
   }
 
-  .guide-item-meaning {
-    font-size: 0.8rem;
-    color: #78716c;
+  .guide-desc {
+    font-size: 0.72rem;
+    color: #46403a;
+    margin-bottom: 0.2rem;
   }
 
-  /* 歷史紀錄 */
+  .guide-meaning {
+    font-size: 0.78rem;
+    color: #625850;
+  }
+
+  /* ── 歷史紀錄 ── */
   .history-section {
     width: 100%;
-    margin-top: 0.5rem;
     padding-top: 2rem;
-    border-top: 1px solid rgba(68, 64, 60, 0.3);
+    border-top: 1px solid rgba(68,55,40,0.22);
   }
 
   .history-header {
@@ -803,42 +980,37 @@
     margin-bottom: 1rem;
   }
 
-  .history-title {
-    color: #57534e;
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
+  .history-header .section-title { margin-bottom: 0; }
 
   .clear-btn {
-    font-size: 0.7rem;
-    color: #57534e;
+    font-size: 0.68rem;
+    color: #4a4540;
     background: none;
-    border: 1px solid rgba(87, 83, 78, 0.35);
+    border: 1px solid rgba(87,83,78,0.3);
     border-radius: 9999px;
-    padding: 0.2rem 0.75rem;
+    padding: 0.22rem 0.8rem;
     cursor: pointer;
     letter-spacing: 0.05em;
     transition: all 0.2s;
+    white-space: nowrap;
   }
-
   .clear-btn:hover {
     color: #9ca3af;
-    border-color: rgba(156, 163, 175, 0.4);
+    border-color: rgba(156,163,175,0.4);
   }
 
   .history-empty {
     text-align: center;
-    color: #3f3c3a;
+    color: #2e2926;
     font-size: 0.85rem;
     padding: 1.5rem 0;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+    font-family: 'Noto Serif TC', serif;
   }
 
   .history-list {
     list-style: none;
-    padding: 0;
-    margin: 0;
+    padding: 0; margin: 0;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -850,8 +1022,8 @@
     gap: 0.25rem;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    border-left: 3px solid transparent;
-    background: rgba(20, 15, 12, 0.5);
+    border-left: 2px solid transparent;
+    background: rgba(14,9,6,0.55);
     animation: entry-appear 0.3s ease-out;
   }
 
@@ -860,10 +1032,10 @@
     to   { opacity: 1; transform: translateX(0); }
   }
 
-  .history-entry-li    { border-left-color: rgba(251, 191, 36, 0.8); box-shadow: inset 0 0 20px rgba(251, 191, 36, 0.05); }
-  .history-entry-sheng { border-left-color: rgba(52, 211, 153, 0.5); }
-  .history-entry-yin   { border-left-color: rgba(107, 114, 128, 0.4); }
-  .history-entry-xiao  { border-left-color: rgba(251, 191, 36, 0.45); }
+  .history-entry-li    { border-left-color: rgba(251,191,36,0.75); box-shadow: inset 0 0 20px rgba(251,191,36,0.04); }
+  .history-entry-sheng { border-left-color: rgba(52,211,153,0.45); }
+  .history-entry-yin   { border-left-color: rgba(107,114,128,0.35); }
+  .history-entry-xiao  { border-left-color: rgba(251,191,36,0.4); }
 
   .entry-meta {
     display: flex;
@@ -873,20 +1045,19 @@
   }
 
   .entry-time {
-    font-size: 0.72rem;
-    color: #44403c;
+    font-size: 0.7rem;
+    color: #38322e;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.02em;
   }
 
   .entry-prayer {
-    font-size: 0.78rem;
-    color: #78716c;
+    font-size: 0.76rem;
+    color: #655e56;
     font-style: italic;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 260px;
+    max-width: 240px;
   }
 
   .entry-result-row {
@@ -901,49 +1072,32 @@
     gap: 0.25rem;
   }
 
-  .entry-blocks-sep {
-    color: #292524;
-    font-size: 0.7rem;
-  }
+  .entry-sep { color: #222020; font-size: 0.7rem; }
 
   .mini-block {
     font-size: 0.7rem;
-    font-weight: 600;
+    font-weight: 700;
     padding: 0.1rem 0.35rem;
     border-radius: 0.25rem;
     letter-spacing: 0.03em;
+    font-family: 'Noto Serif TC', serif;
   }
 
-  .mini-yang {
-    color: #ef4444;
-    background: rgba(220, 38, 38, 0.12);
-  }
+  .mini-yang { color: #ef4444; background: rgba(220,38,38,0.1); }
+  .mini-yin  { color: #b45309; background: rgba(146,64,14,0.12); }
+  .mini-li   { color: #fbbf24; background: rgba(251,191,36,0.12); }
 
-  .mini-yin {
-    color: #b45309;
-    background: rgba(146, 64, 14, 0.15);
-  }
+  .entry-arrow { color: #2e2926; font-size: 0.72rem; }
 
-  .mini-li {
-    color: #fbbf24;
-    background: rgba(251, 191, 36, 0.15);
-    font-weight: 700;
-  }
-
-  .entry-arrow {
-    color: #3f3c3a;
-    font-size: 0.75rem;
-  }
-
-  .entry-result-name {
+  .entry-result {
     font-size: 0.85rem;
     font-weight: 700;
-    font-family: 'Noto Sans TC', serif;
+    font-family: 'Noto Serif TC', serif;
     letter-spacing: 0.06em;
   }
 
-  .entry-result-li    { color: #fbbf24; text-shadow: 0 0 8px rgba(251, 191, 36, 0.5); }
+  .entry-result-li    { color: #fbbf24; text-shadow: 0 0 8px rgba(251,191,36,0.45); }
   .entry-result-sheng { color: #34d399; }
   .entry-result-yin   { color: #6b7280; }
-  .entry-result-xiao  { color: #fbbf24; }
+  .entry-result-xiao  { color: #d97706; }
 </style>
