@@ -212,7 +212,8 @@
           送出訊息（透過 GitHub Issue）
         </button>
         <p class="text-xs text-gray-500 text-center">
-          點擊後將導向 GitHub 建立 Issue，需要 GitHub 帳號
+          點擊後將導向 GitHub 建立 Issue，需要 GitHub 帳號。<br />
+          提交的訊息將會公開顯示，請勿填寫敏感個人資訊。
         </p>
       </form>
     </div>
