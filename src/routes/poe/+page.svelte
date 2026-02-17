@@ -82,8 +82,8 @@
     block2 = null;
 
     setTimeout(() => {
-      // 每支筊杯有 1% 機率直立（立杯）
-      const rollBlock = () => Math.random() < 0.01 ? 2 : Math.floor(Math.random() * 2);
+      // 每支筊杯有 0.1% 機率直立（立杯）
+      const rollBlock = () => Math.random() < 0.001 ? 2 : Math.floor(Math.random() * 2);
       const b1 = rollBlock();
       const b2 = rollBlock();
       block1 = b1;
