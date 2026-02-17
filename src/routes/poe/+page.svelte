@@ -1,8 +1,3 @@
-<svelte:head>
-  <title>擲杯占卜 | Devin Wu</title>
-  <meta name="description" content="傳統台灣廟宇筊杯問卜儀式模擬">
-</svelte:head>
-
 <script>
   import { onMount } from 'svelte';
 
@@ -105,6 +100,11 @@
     }, 1100);
   }
 </script>
+
+<svelte:head>
+  <title>擲杯占卜 | Devin Wu</title>
+  <meta name="description" content="傳統台灣廟宇筊杯問卜儀式模擬">
+</svelte:head>
 
 <div class="poe-page">
   <!-- 背景裝飾 -->
