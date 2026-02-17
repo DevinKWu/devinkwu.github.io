@@ -46,7 +46,7 @@
       name: '立杯',
       subtitle: '神蹟顯現',
       message: '萬中無一的神蹟！筊杯直立而不倒，此乃神明強烈降臨之徵兆，所求之事意義非凡，必得虔誠感恩並認真對待此天啟。',
-      note: '筊杯直立，極為罕見',
+      note: '筊杯直立，9007兆分之一的奇蹟',
       colorClass: 'result-li',
     },
     sheng: {
@@ -82,8 +82,8 @@
     block2 = null;
 
     setTimeout(() => {
-      // 每支筊杯有 0.1% 機率直立（立杯）
-      const rollBlock = () => Math.random() < 0.001 ? 2 : Math.floor(Math.random() * 2);
+      // 每支筊杯有 1/9007199254740991 機率直立（立杯）
+      const rollBlock = () => Math.random() < 1 / Number.MAX_SAFE_INTEGER ? 2 : Math.floor(Math.random() * 2);
       const b1 = rollBlock();
       const b2 = rollBlock();
       block1 = b1;
@@ -297,7 +297,7 @@
       </div>
       <div class="guide-item guide-li guide-li-full">
         <div class="guide-item-name">立杯</div>
-        <div class="guide-item-desc">筊杯直立不倒，萬中無一</div>
+        <div class="guide-item-desc">筊杯直立不倒，9007兆分之一</div>
         <div class="guide-item-meaning">神蹟顯現，極為罕見</div>
       </div>
     </div>
