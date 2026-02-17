@@ -7,7 +7,7 @@
   import { onMount } from 'svelte';
 
   let isAnimating = $state(false);
-  let block1 = $state(null); // null = 未擲, 0 = 陽面, 1 = 陰面
+  let block1 = $state(null); // null = 未擲, 0 = 陽面, 1 = 陰面, 2 = 立
   let block2 = $state(null);
   let prayer = $state('');
   let hasThrown = $state(false);
@@ -36,11 +36,19 @@
 
   const result = $derived(
     block1 === null ? null :
+    block1 === 2 || block2 === 2 ? 'li' :
     block1 !== block2 ? 'sheng' :
     block1 === 0 ? 'yin' : 'xiao'
   );
 
   const resultMap = {
+    li: {
+      name: '立杯',
+      subtitle: '神蹟顯現',
+      message: '萬中無一的神蹟！筊杯直立而不倒，此乃神明強烈降臨之徵兆，所求之事意義非凡，必得虔誠感恩並認真對待此天啟。',
+      note: '筊杯直立，9007兆分之一的奇蹟',
+      colorClass: 'result-li',
+    },
     sheng: {
       name: '聖杯',
       subtitle: '神明允許',
@@ -74,13 +82,15 @@
     block2 = null;
 
     setTimeout(() => {
-      const b1 = Math.floor(Math.random() * 2);
-      const b2 = Math.floor(Math.random() * 2);
+      // 每支筊杯有 1/9007199254740991 機率直立（立杯）
+      const rollBlock = () => Math.random() < 1 / Number.MAX_SAFE_INTEGER ? 2 : Math.floor(Math.random() * 2);
+      const b1 = rollBlock();
+      const b2 = rollBlock();
       block1 = b1;
       block2 = b2;
       isAnimating = false;
 
-      const res = b1 !== b2 ? 'sheng' : b1 === 0 ? 'yin' : 'xiao';
+      const res = b1 === 2 || b2 === 2 ? 'li' : b1 !== b2 ? 'sheng' : b1 === 0 ? 'yin' : 'xiao';
       history = [
         {
           id: Date.now(),
@@ -147,7 +157,7 @@
               <ellipse cx="60" cy="60" rx="18" ry="10" fill="#EF4444" opacity="0.3"/>
               <text x="60" y="67" text-anchor="middle" fill="#7F1D1D" font-size="15" font-family="Noto Sans TC, serif" font-weight="bold">陽</text>
             </svg>
-          {:else}
+          {:else if block1 === 1}
             <!-- 陰面：木褐色，平面朝上（較平緩） -->
             <svg class="poe-svg yin" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
               <ellipse cx="60" cy="82" rx="50" ry="7" fill="rgba(60,30,10,0.4)"/>
@@ -157,11 +167,26 @@
               <path d="M 25,66 A 35,24 0 0,0 95,66" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
               <text x="60" y="71" text-anchor="middle" fill="#D97706" font-size="15" font-family="Noto Sans TC, serif" font-weight="bold">陰</text>
             </svg>
+          {:else}
+            <!-- 立面：直立不倒，神蹟 -->
+            <svg class="poe-svg li" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="60" cy="84" rx="12" ry="3.5" fill="rgba(251,191,36,0.4)"/>
+              <path d="M 57,18 C 67,32 68,57 59,78 C 52,62 51,36 57,18 Z" fill="#7c2d12"/>
+              <path d="M 57,18 C 63,35 63,60 59,78" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+              <g opacity="0.6" stroke="#fbbf24" stroke-width="1.3" stroke-linecap="round">
+                <line x1="59" y1="13" x2="59" y2="6"/>
+                <line x1="65" y1="15" x2="69" y2="9"/>
+                <line x1="53" y1="15" x2="49" y2="9"/>
+                <line x1="69" y1="22" x2="74" y2="17"/>
+                <line x1="49" y1="22" x2="44" y2="17"/>
+              </g>
+              <text x="61" y="55" text-anchor="middle" fill="#fbbf24" font-size="14" font-family="Noto Sans TC, serif" font-weight="bold">立</text>
+            </svg>
           {/if}
         </div>
         {#if !isAnimating && block1 !== null}
-          <span class="block-label {block1 === 0 ? 'yang-label' : 'yin-label'}">
-            {block1 === 0 ? '陽面' : '陰面'}
+          <span class="block-label {block1 === 0 ? 'yang-label' : block1 === 1 ? 'yin-label' : 'li-label'}">
+            {block1 === 0 ? '陽面' : block1 === 1 ? '陰面' : '立！'}
           </span>
         {/if}
       </div>
@@ -188,7 +213,7 @@
               <ellipse cx="60" cy="60" rx="18" ry="10" fill="#EF4444" opacity="0.3"/>
               <text x="60" y="67" text-anchor="middle" fill="#7F1D1D" font-size="15" font-family="Noto Sans TC, serif" font-weight="bold">陽</text>
             </svg>
-          {:else}
+          {:else if block2 === 1}
             <svg class="poe-svg yin" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
               <ellipse cx="60" cy="82" rx="50" ry="7" fill="rgba(60,30,10,0.4)"/>
               <path d="M 10,72 A 50,38 0 0,1 110,72 L 110,78 Q 60,86 10,78 Z" fill="#78350F"/>
@@ -197,11 +222,26 @@
               <path d="M 25,66 A 35,24 0 0,0 95,66" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
               <text x="60" y="71" text-anchor="middle" fill="#D97706" font-size="15" font-family="Noto Sans TC, serif" font-weight="bold">陰</text>
             </svg>
+          {:else}
+            <!-- 立面：直立不倒，神蹟 -->
+            <svg class="poe-svg li" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="60" cy="84" rx="12" ry="3.5" fill="rgba(251,191,36,0.4)"/>
+              <path d="M 57,18 C 67,32 68,57 59,78 C 52,62 51,36 57,18 Z" fill="#7c2d12"/>
+              <path d="M 57,18 C 63,35 63,60 59,78" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+              <g opacity="0.6" stroke="#fbbf24" stroke-width="1.3" stroke-linecap="round">
+                <line x1="59" y1="13" x2="59" y2="6"/>
+                <line x1="65" y1="15" x2="69" y2="9"/>
+                <line x1="53" y1="15" x2="49" y2="9"/>
+                <line x1="69" y1="22" x2="74" y2="17"/>
+                <line x1="49" y1="22" x2="44" y2="17"/>
+              </g>
+              <text x="61" y="55" text-anchor="middle" fill="#fbbf24" font-size="14" font-family="Noto Sans TC, serif" font-weight="bold">立</text>
+            </svg>
           {/if}
         </div>
         {#if !isAnimating && block2 !== null}
-          <span class="block-label {block2 === 0 ? 'yang-label' : 'yin-label'}">
-            {block2 === 0 ? '陽面' : '陰面'}
+          <span class="block-label {block2 === 0 ? 'yang-label' : block2 === 1 ? 'yin-label' : 'li-label'}">
+            {block2 === 0 ? '陽面' : block2 === 1 ? '陰面' : '立！'}
           </span>
         {/if}
       </div>
@@ -255,6 +295,11 @@
           <div class="guide-item-meaning">再擲一次</div>
         </div>
       </div>
+      <div class="guide-item guide-li guide-li-full">
+        <div class="guide-item-name">立杯</div>
+        <div class="guide-item-desc">筊杯直立不倒，9007兆分之一</div>
+        <div class="guide-item-meaning">神蹟顯現，極為罕見</div>
+      </div>
     </div>
 
     <!-- 歷史紀錄 -->
@@ -280,12 +325,12 @@
               </div>
               <div class="entry-result-row">
                 <div class="entry-blocks">
-                  <span class="mini-block {entry.block1 === 0 ? 'mini-yang' : 'mini-yin'}">
-                    {entry.block1 === 0 ? '陽' : '陰'}
+                  <span class="mini-block {entry.block1 === 0 ? 'mini-yang' : entry.block1 === 1 ? 'mini-yin' : 'mini-li'}">
+                    {entry.block1 === 0 ? '陽' : entry.block1 === 1 ? '陰' : '立'}
                   </span>
                   <span class="entry-blocks-sep">·</span>
-                  <span class="mini-block {entry.block2 === 0 ? 'mini-yang' : 'mini-yin'}">
-                    {entry.block2 === 0 ? '陽' : '陰'}
+                  <span class="mini-block {entry.block2 === 0 ? 'mini-yang' : entry.block2 === 1 ? 'mini-yin' : 'mini-li'}">
+                    {entry.block2 === 0 ? '陽' : entry.block2 === 1 ? '陰' : '立'}
                   </span>
                 </div>
                 <span class="entry-arrow">→</span>
@@ -478,6 +523,16 @@
     filter: drop-shadow(0 0 8px rgba(146, 64, 14, 0.4));
   }
 
+  .poe-svg.li {
+    filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.75));
+    animation: li-glow 1s ease-in-out infinite alternate;
+  }
+
+  @keyframes li-glow {
+    from { filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5)); }
+    to   { filter: drop-shadow(0 0 22px rgba(251, 191, 36, 0.9)); }
+  }
+
   @keyframes poe-flip {
     0%   { transform: translateY(0) rotate(0deg); }
     20%  { transform: translateY(-60px) rotate(180deg); }
@@ -495,6 +550,12 @@
 
   .yang-label { color: #ef4444; }
   .yin-label  { color: #b45309; }
+  .li-label   { color: #fbbf24; font-weight: 700; animation: li-pulse 0.8s ease-in-out infinite alternate; }
+
+  @keyframes li-pulse {
+    from { opacity: 0.8; }
+    to   { opacity: 1; text-shadow: 0 0 8px rgba(251, 191, 36, 0.8); }
+  }
 
   .divider-icon {
     color: #44403c;
@@ -560,6 +621,22 @@
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+
+  .result-li {
+    background: rgba(60, 40, 5, 0.4);
+    border-color: rgba(251, 191, 36, 0.6);
+    box-shadow: 0 0 40px rgba(251, 191, 36, 0.12);
+    animation: result-appear 0.4s ease-out, li-card-glow 1.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes li-card-glow {
+    from { box-shadow: 0 0 20px rgba(251, 191, 36, 0.08); }
+    to   { box-shadow: 0 0 50px rgba(251, 191, 36, 0.22); }
+  }
+
+  .result-li .result-name { color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+  .result-li .result-subtitle { color: #d97706; }
+  .result-li .result-note { color: #fbbf24; }
 
   .result-sheng {
     background: rgba(6, 78, 59, 0.25);
@@ -647,6 +724,34 @@
     border-radius: 0.5rem;
     border: 1px solid transparent;
   }
+
+  .guide-li {
+    background: rgba(60, 40, 5, 0.3);
+    border-color: rgba(251, 191, 36, 0.35);
+  }
+
+  .guide-li-full {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 0.75rem 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .guide-li-full .guide-item-name {
+    margin-bottom: 0;
+  }
+
+  .guide-li-full .guide-item-desc,
+  .guide-li-full .guide-item-meaning {
+    margin-bottom: 0;
+  }
+
+  .guide-li .guide-item-name { color: #fbbf24; }
+  .guide-li .guide-item-desc { color: #78716c; }
+  .guide-li .guide-item-meaning { color: #92400e; }
 
   .guide-sheng {
     background: rgba(6, 78, 59, 0.15);
@@ -755,6 +860,7 @@
     to   { opacity: 1; transform: translateX(0); }
   }
 
+  .history-entry-li    { border-left-color: rgba(251, 191, 36, 0.8); box-shadow: inset 0 0 20px rgba(251, 191, 36, 0.05); }
   .history-entry-sheng { border-left-color: rgba(52, 211, 153, 0.5); }
   .history-entry-yin   { border-left-color: rgba(107, 114, 128, 0.4); }
   .history-entry-xiao  { border-left-color: rgba(251, 191, 36, 0.45); }
@@ -818,6 +924,12 @@
     background: rgba(146, 64, 14, 0.15);
   }
 
+  .mini-li {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+    font-weight: 700;
+  }
+
   .entry-arrow {
     color: #3f3c3a;
     font-size: 0.75rem;
@@ -830,6 +942,7 @@
     letter-spacing: 0.06em;
   }
 
+  .entry-result-li    { color: #fbbf24; text-shadow: 0 0 8px rgba(251, 191, 36, 0.5); }
   .entry-result-sheng { color: #34d399; }
   .entry-result-yin   { color: #6b7280; }
   .entry-result-xiao  { color: #fbbf24; }
