@@ -219,12 +219,12 @@
               未擲：暗沉的陽面輪廓，彷彿靜靜等待
             -->
             <svg class="poe-svg poe-dim" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="100" cy="124" rx="66" ry="6" fill="rgba(0,0,0,0.28)"/>
-              <path d="M 14,80 C 14,48 52,12 100,10 C 148,12 186,48 186,80
-                        C 186,88 148,94 100,94 C 52,94 14,88 14,80 Z"
-                    fill="#150606"/>
-              <path d="M 14,80 C 14,48 52,12 100,10 C 148,12 186,48 186,80"
-                    fill="none" stroke="#250C0C" stroke-width="1.5"/>
+              <ellipse cx="100" cy="96" rx="70" ry="5" fill="rgba(0,0,0,0.18)"/>
+              <!-- 底部邊厚（平面） -->
+              <path d="M 18,82 L 182,82 L 182,91 A 82,10 0 0 1 18,91 Z" fill="#1A0606"/>
+              <!-- 杯身：半圓 D 形，平面朝下，弧頂朝上 -->
+              <path d="M 18,82 A 82,60 0 0 0 182,82 Z" fill="#100404"/>
+              <path d="M 18,82 A 82,60 0 0 0 182,82" fill="none" stroke="#1C0808" stroke-width="1.5"/>
             </svg>
 
           {:else if block1 === 0}
@@ -237,37 +237,38 @@
             -->
             <svg class="poe-svg poe-yang" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
               <!-- 落地陰影 -->
-              <ellipse cx="100" cy="124" rx="66" ry="6" fill="rgba(100,8,8,0.42)"/>
+              <ellipse cx="100" cy="96" rx="70" ry="5" fill="rgba(100,8,8,0.32)"/>
 
               <!-- 底部厚度（暗） -->
-              <path d="M 14,80 C 52,92 148,92 186,80
-                        C 186,88 148,96 100,96 C 52,96 14,88 14,80 Z"
+              <!-- 底部平面邊厚（暗紅，表現厚度） -->
+              <path d="M 18,82 L 182,82 L 182,91 A 82,10 0 0 1 18,91 Z"
                     fill="url(#pg-rim)"/>
 
               <!-- 主漆面（凸拱） -->
-              <path d="M 14,80 C 14,46 52,10 100,8
-                        C 148,10 186,46 186,80
-                        C 186,84 148,88 100,88
-                        C 52,88 14,84 14,80 Z"
+              <!-- 主漆面：半圓 D 形，平面在底，弧頂朝上 -->
+              <path d="M 18,82 A 82,60 0 0 0 182,82 Z"
                     fill="url(#pg-yang)"/>
 
               <!-- 寬幅漫反射高光（凸面中段偏上受光） -->
-              <ellipse cx="88" cy="46" rx="44" ry="18"
-                       fill="url(#pg-spec)" opacity="0.55"
-                       transform="rotate(-8,88,46)"/>
+              <!-- 寬幅高光：左上受光，凸拱感 -->
+              <ellipse cx="76" cy="48" rx="42" ry="20"
+                       fill="url(#pg-spec)" opacity="0.70"
+                       transform="rotate(-10,76,48)"/>
 
               <!-- 窄亮線（漆面鏡面反光最亮點） -->
-              <path d="M 46,34 C 64,22 88,18 112,24"
-                    fill="none" stroke="rgba(255,230,230,0.70)"
-                    stroke-width="3.2" stroke-linecap="round"/>
+              <!-- 鏡面亮線（漆面最亮點） -->
+              <path d="M 42,64 Q 82,32 128,38"
+                    fill="none" stroke="rgba(255,230,230,0.62)"
+                    stroke-width="3" stroke-linecap="round"/>
 
               <!-- 邊緣收邊暗線（讓輪廓更立體） -->
-              <path d="M 14,80 C 14,46 52,10 100,8 C 148,10 186,46 186,80"
-                    fill="none" stroke="rgba(50,0,0,0.45)" stroke-width="2"/>
+              <!-- 弧緣收邊暗線 -->
+              <path d="M 18,82 A 82,60 0 0 0 182,82"
+                    fill="none" stroke="rgba(40,0,0,0.40)" stroke-width="1.5"/>
 
               <!-- 陽字 -->
-              <text x="100" y="76" text-anchor="middle"
-                    fill="rgba(255,210,210,0.75)" font-size="17"
+              <text x="100" y="62" text-anchor="middle"
+                    fill="rgba(255,210,210,0.72)" font-size="17"
                     font-family="'Noto Serif TC',serif" font-weight="bold"
                     letter-spacing="2">陽</text>
             </svg>
@@ -282,43 +283,42 @@
             -->
             <svg class="poe-svg poe-yin" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
               <!-- 落地陰影 -->
-              <ellipse cx="100" cy="124" rx="66" ry="6" fill="rgba(40,18,4,0.42)"/>
+              <ellipse cx="100" cy="96" rx="70" ry="5" fill="rgba(40,18,4,0.30)"/>
 
               <!-- 底部厚度（深木色） -->
-              <path d="M 14,76 C 52,86 148,86 186,76
-                        C 186,84 148,92 100,92 C 52,92 14,84 14,76 Z"
+              <!-- 底部平面邊厚（深木色） -->
+              <path d="M 18,78 L 182,78 L 182,87 A 82,10 0 0 1 18,87 Z"
                     fill="url(#pg-yin-rim)"/>
 
               <!-- 木質平面主體（凹弧較平） -->
-              <path d="M 14,76 C 14,56 52,40 100,38
-                        C 148,40 186,56 186,76
-                        C 186,80 148,84 100,84
-                        C 52,84 14,80 14,76 Z"
+              <!-- 木質平面：半圓 D 形（弧較淺，平面在底） -->
+              <path d="M 18,78 A 82,50 0 0 0 182,78 Z"
                     fill="url(#pg-yin)"/>
+              <!-- 弧緣紅漆邊（從平面側看得見外緣紅漆） -->
+              <path d="M 18,78 A 82,50 0 0 0 182,78"
+                    fill="none" stroke="#8E1212" stroke-width="3.5" opacity="0.52"/>
 
               <!-- 木紋線條（貼合弧面彎曲） -->
-              <path d="M 28,76 Q 100,68 172,76"
-                    fill="none" stroke="rgba(140,85,30,0.32)" stroke-width="1.6" stroke-linecap="round"/>
-              <path d="M 34,71 Q 100,63 166,71"
-                    fill="none" stroke="rgba(145,88,32,0.28)" stroke-width="1.3" stroke-linecap="round"/>
-              <path d="M 42,66 Q 100,58 158,66"
-                    fill="none" stroke="rgba(150,92,35,0.26)" stroke-width="1.2" stroke-linecap="round"/>
-              <path d="M 52,61 Q 100,54 148,61"
-                    fill="none" stroke="rgba(155,96,38,0.24)" stroke-width="1.1" stroke-linecap="round"/>
-              <path d="M 22,80 Q 100,73 178,80"
-                    fill="none" stroke="rgba(130,75,25,0.20)" stroke-width="1.6" stroke-linecap="round"/>
+              <!-- 木紋線條（配合新 D 形半圓輪廓） -->
+              <path d="M 19,74 Q 100,67 181,74"
+                    fill="none" stroke="rgba(140,85,30,0.30)" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M 20,68 Q 100,61 180,68"
+                    fill="none" stroke="rgba(145,88,32,0.26)" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M 22,62 Q 100,55 178,62"
+                    fill="none" stroke="rgba(150,92,35,0.24)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M 25,56 Q 100,49 175,56"
+                    fill="none" stroke="rgba(155,96,38,0.22)" stroke-width="1.1" stroke-linecap="round"/>
+              <path d="M 29,50 Q 100,43 171,50"
+                    fill="none" stroke="rgba(130,75,25,0.18)" stroke-width="1.0" stroke-linecap="round"/>
 
               <!-- 木面漫反光（木頭亞光感） -->
-              <ellipse cx="84" cy="56" rx="36" ry="14"
-                       fill="rgba(220,175,110,0.18)"
-                       transform="rotate(-6,84,56)"/>
-
-              <!-- 邊緣暗線 -->
-              <path d="M 14,76 C 14,56 52,40 100,38 C 148,40 186,56 186,76"
-                    fill="none" stroke="rgba(60,28,8,0.4)" stroke-width="2"/>
+              <!-- 木面亞光漫反射 -->
+              <ellipse cx="80" cy="55" rx="38" ry="16"
+                       fill="rgba(220,175,110,0.16)"
+                       transform="rotate(-5,80,55)"/>
 
               <!-- 陰字 -->
-              <text x="100" y="76" text-anchor="middle"
+              <text x="100" y="60" text-anchor="middle"
                     fill="rgba(220,160,75,0.82)" font-size="17"
                     font-family="'Noto Serif TC',serif" font-weight="bold"
                     letter-spacing="2">陰</text>
@@ -333,48 +333,46 @@
             -->
             <svg class="poe-svg poe-li" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
               <!-- 底部光暈陰影 -->
-              <ellipse cx="100" cy="124" rx="12" ry="4" fill="rgba(251,191,36,0.38)"/>
-
-              <!-- 立杯金光光圈（頂部神聖光暈） -->
-              <ellipse cx="100" cy="18" rx="26" ry="26" fill="url(#pg-gold)"/>
+              <!-- 立杯金光光圈（D 形弧頂神聖光暈） -->
+              <ellipse cx="100" cy="40" rx="50" ry="50" fill="url(#pg-gold)"/>
+              <!-- 底部小陰影（直立時接地面小） -->
+              <ellipse cx="100" cy="120" rx="52" ry="5" fill="rgba(251,191,36,0.30)"/>
 
               <!-- 杯身主體（紡錘形） -->
-              <path d="M 98,14 C 102,32 110,58 108,96
-                        C 106,108 103,118 100,122
-                        C 97,118 94,108 92,96
-                        C 90,58 98,32 98,14 Z"
-                    fill="url(#pg-li-body)"/>
+              <!-- 杯身：半圓 D 形直立，平面在底，弧頂朝上 -->
+              <path d="M 48,110 A 52,70 0 0 0 152,110 Z" fill="url(#pg-yang)"/>
+              <!-- 底部平面邊厚 -->
+              <path d="M 48,110 L 152,110 L 152,118 A 52,9 0 0 1 48,118 Z" fill="#280808"/>
+              <!-- 外弧紅漆面邊線 -->
+              <path d="M 48,110 A 52,70 0 0 0 152,110"
+                    fill="none" stroke="#C41818" stroke-width="2.5" opacity="0.60" stroke-linecap="round"/>
+              <!-- 漆面高光 -->
+              <ellipse cx="84" cy="82" rx="26" ry="20"
+                       fill="url(#pg-spec)" opacity="0.52"
+                       transform="rotate(-10,84,82)"/>
 
               <!-- 右側：紅漆面稜線反光 -->
-              <path d="M 98,14 C 104,36 110,62 108,96 C 105,110 102,118 100,122"
-                    fill="none" stroke="#C41818" stroke-width="2.5"
-                    stroke-linecap="round" opacity="0.7"/>
-
-              <!-- 左側：木面稜線 -->
-              <path d="M 98,14 C 92,36 90,62 92,96 C 95,110 98,118 100,122"
-                    fill="none" stroke="#A06030" stroke-width="1.8"
-                    stroke-linecap="round" opacity="0.5"/>
-
-              <!-- 中心金色豎線（神蹟之光） -->
-              <path d="M 100,14 L 100,116"
+              <!-- 中心豎線（神蹟之光，由弧頂至平面） -->
+              <path d="M 100,40 L 100,110"
                     stroke="rgba(251,191,36,0.28)" stroke-width="1.2"
                     stroke-linecap="round"/>
 
               <!-- 放射光芒 -->
+              <!-- 放射光芒（由 D 形弧頂放出） -->
               <g stroke="#fbbf24" stroke-linecap="round" opacity="0.85">
-                <line x1="100" y1="7"  x2="100" y2="-2"  stroke-width="2.5"/>
-                <line x1="109" y1="10" x2="116" y2="2"   stroke-width="2.0"/>
-                <line x1="91"  y1="10" x2="84"  y2="2"   stroke-width="2.0"/>
-                <line x1="116" y1="20" x2="125" y2="13"  stroke-width="1.6"/>
-                <line x1="84"  y1="20" x2="75"  y2="13"  stroke-width="1.6"/>
-                <line x1="120" y1="33" x2="130" y2="27"  stroke-width="1.3"/>
-                <line x1="80"  y1="33" x2="70"  y2="27"  stroke-width="1.3"/>
-                <line x1="122" y1="48" x2="132" y2="44"  stroke-width="1.0"/>
-                <line x1="78"  y1="48" x2="68"  y2="44"  stroke-width="1.0"/>
+                <line x1="100" y1="35" x2="100" y2="24" stroke-width="2.5"/>
+                <line x1="110" y1="38" x2="119" y2="28" stroke-width="2.0"/>
+                <line x1="90"  y1="38" x2="81"  y2="28" stroke-width="2.0"/>
+                <line x1="118" y1="44" x2="128" y2="35" stroke-width="1.6"/>
+                <line x1="82"  y1="44" x2="72"  y2="35" stroke-width="1.6"/>
+                <line x1="122" y1="54" x2="133" y2="46" stroke-width="1.3"/>
+                <line x1="78"  y1="54" x2="67"  y2="46" stroke-width="1.3"/>
+                <line x1="124" y1="65" x2="136" y2="59" stroke-width="1.0"/>
+                <line x1="76"  y1="65" x2="64"  y2="59" stroke-width="1.0"/>
               </g>
 
               <!-- 立字 -->
-              <text x="100" y="72" text-anchor="middle"
+              <text x="100" y="90" text-anchor="middle"
                     fill="#fbbf24" font-size="15"
                     font-family="'Noto Serif TC',serif" font-weight="bold"
                     letter-spacing="1">立</text>
@@ -396,98 +394,105 @@
         <div class="block-wrapper {isAnimating ? 'animating animating-delay' : ''}">
           {#if block2 === null}
             <svg class="poe-svg poe-dim" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="100" cy="124" rx="66" ry="6" fill="rgba(0,0,0,0.28)"/>
-              <path d="M 14,80 C 14,48 52,12 100,10 C 148,12 186,48 186,80
-                        C 186,88 148,94 100,94 C 52,94 14,88 14,80 Z"
-                    fill="#150606"/>
-              <path d="M 14,80 C 14,48 52,12 100,10 C 148,12 186,48 186,80"
-                    fill="none" stroke="#250C0C" stroke-width="1.5"/>
+              <ellipse cx="100" cy="96" rx="70" ry="5" fill="rgba(0,0,0,0.18)"/>
+              <!-- 底部邊厚（平面） -->
+              <path d="M 18,82 L 182,82 L 182,91 A 82,10 0 0 1 18,91 Z" fill="#1A0606"/>
+              <!-- 杯身：半圓 D 形，平面朝下，弧頂朝上 -->
+              <path d="M 18,82 A 82,60 0 0 0 182,82 Z" fill="#100404"/>
+              <path d="M 18,82 A 82,60 0 0 0 182,82" fill="none" stroke="#1C0808" stroke-width="1.5"/>
             </svg>
           {:else if block2 === 0}
             <svg class="poe-svg poe-yang" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="100" cy="124" rx="66" ry="6" fill="rgba(100,8,8,0.42)"/>
-              <path d="M 14,80 C 52,92 148,92 186,80
-                        C 186,88 148,96 100,96 C 52,96 14,88 14,80 Z"
+              <ellipse cx="100" cy="96" rx="70" ry="5" fill="rgba(100,8,8,0.32)"/>
+              <!-- 底部平面邊厚（暗紅，表現厚度） -->
+              <path d="M 18,82 L 182,82 L 182,91 A 82,10 0 0 1 18,91 Z"
                     fill="url(#pg-rim)"/>
-              <path d="M 14,80 C 14,46 52,10 100,8
-                        C 148,10 186,46 186,80
-                        C 186,84 148,88 100,88
-                        C 52,88 14,84 14,80 Z"
+              <!-- 主漆面：半圓 D 形，平面在底，弧頂朝上 -->
+              <path d="M 18,82 A 82,60 0 0 0 182,82 Z"
                     fill="url(#pg-yang)"/>
-              <ellipse cx="88" cy="46" rx="44" ry="18"
-                       fill="url(#pg-spec)" opacity="0.55"
-                       transform="rotate(-8,88,46)"/>
-              <path d="M 46,34 C 64,22 88,18 112,24"
-                    fill="none" stroke="rgba(255,230,230,0.70)"
-                    stroke-width="3.2" stroke-linecap="round"/>
-              <path d="M 14,80 C 14,46 52,10 100,8 C 148,10 186,46 186,80"
-                    fill="none" stroke="rgba(50,0,0,0.45)" stroke-width="2"/>
-              <text x="100" y="76" text-anchor="middle"
-                    fill="rgba(255,210,210,0.75)" font-size="17"
+              <!-- 寬幅高光：左上受光，凸拱感 -->
+              <ellipse cx="76" cy="48" rx="42" ry="20"
+                       fill="url(#pg-spec)" opacity="0.70"
+                       transform="rotate(-10,76,48)"/>
+              <!-- 鏡面亮線（漆面最亮點） -->
+              <path d="M 42,64 Q 82,32 128,38"
+                    fill="none" stroke="rgba(255,230,230,0.62)"
+                    stroke-width="3" stroke-linecap="round"/>
+              <!-- 弧緣收邊暗線 -->
+              <path d="M 18,82 A 82,60 0 0 0 182,82"
+                    fill="none" stroke="rgba(40,0,0,0.40)" stroke-width="1.5"/>
+              <text x="100" y="62" text-anchor="middle"
+                    fill="rgba(255,210,210,0.72)" font-size="17"
                     font-family="'Noto Serif TC',serif" font-weight="bold"
                     letter-spacing="2">陽</text>
             </svg>
           {:else if block2 === 1}
             <svg class="poe-svg poe-yin" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="100" cy="124" rx="66" ry="6" fill="rgba(40,18,4,0.42)"/>
-              <path d="M 14,76 C 52,86 148,86 186,76
-                        C 186,84 148,92 100,92 C 52,92 14,84 14,76 Z"
+              <ellipse cx="100" cy="96" rx="70" ry="5" fill="rgba(40,18,4,0.30)"/>
+              <!-- 底部平面邊厚（深木色） -->
+              <path d="M 18,78 L 182,78 L 182,87 A 82,10 0 0 1 18,87 Z"
                     fill="url(#pg-yin-rim)"/>
-              <path d="M 14,76 C 14,56 52,40 100,38
-                        C 148,40 186,56 186,76
-                        C 186,80 148,84 100,84
-                        C 52,84 14,80 14,76 Z"
+              <!-- 木質平面：半圓 D 形（弧較淺，平面在底） -->
+              <path d="M 18,78 A 82,50 0 0 0 182,78 Z"
                     fill="url(#pg-yin)"/>
-              <path d="M 28,76 Q 100,68 172,76"
-                    fill="none" stroke="rgba(140,85,30,0.32)" stroke-width="1.6" stroke-linecap="round"/>
-              <path d="M 34,71 Q 100,63 166,71"
-                    fill="none" stroke="rgba(145,88,32,0.28)" stroke-width="1.3" stroke-linecap="round"/>
-              <path d="M 42,66 Q 100,58 158,66"
-                    fill="none" stroke="rgba(150,92,35,0.26)" stroke-width="1.2" stroke-linecap="round"/>
-              <path d="M 52,61 Q 100,54 148,61"
-                    fill="none" stroke="rgba(155,96,38,0.24)" stroke-width="1.1" stroke-linecap="round"/>
-              <path d="M 22,80 Q 100,73 178,80"
-                    fill="none" stroke="rgba(130,75,25,0.20)" stroke-width="1.6" stroke-linecap="round"/>
+              <!-- 弧緣紅漆邊（從平面側看得見外緣紅漆） -->
+              <path d="M 18,78 A 82,50 0 0 0 182,78"
+                    fill="none" stroke="#8E1212" stroke-width="3.5" opacity="0.52"/>
+              <!-- 木紋線條（配合新 D 形半圓輪廓） -->
+              <path d="M 19,74 Q 100,67 181,74"
+                    fill="none" stroke="rgba(140,85,30,0.30)" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M 20,68 Q 100,61 180,68"
+                    fill="none" stroke="rgba(145,88,32,0.26)" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M 22,62 Q 100,55 178,62"
+                    fill="none" stroke="rgba(150,92,35,0.24)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M 25,56 Q 100,49 175,56"
+                    fill="none" stroke="rgba(155,96,38,0.22)" stroke-width="1.1" stroke-linecap="round"/>
+              <path d="M 29,50 Q 100,43 171,50"
+                    fill="none" stroke="rgba(130,75,25,0.18)" stroke-width="1.0" stroke-linecap="round"/>
               <ellipse cx="84" cy="56" rx="36" ry="14"
                        fill="rgba(220,175,110,0.18)"
                        transform="rotate(-6,84,56)"/>
               <path d="M 14,76 C 14,56 52,40 100,38 C 148,40 186,56 186,76"
                     fill="none" stroke="rgba(60,28,8,0.4)" stroke-width="2"/>
-              <text x="100" y="76" text-anchor="middle"
+              <text x="100" y="60" text-anchor="middle"
                     fill="rgba(220,160,75,0.82)" font-size="17"
                     font-family="'Noto Serif TC',serif" font-weight="bold"
                     letter-spacing="2">陰</text>
             </svg>
           {:else}
             <svg class="poe-svg poe-li" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="100" cy="124" rx="12" ry="4" fill="rgba(251,191,36,0.38)"/>
-              <ellipse cx="100" cy="18" rx="26" ry="26" fill="url(#pg-gold)"/>
-              <path d="M 98,14 C 102,32 110,58 108,96
-                        C 106,108 103,118 100,122
-                        C 97,118 94,108 92,96
-                        C 90,58 98,32 98,14 Z"
-                    fill="url(#pg-li-body)"/>
-              <path d="M 98,14 C 104,36 110,62 108,96 C 105,110 102,118 100,122"
-                    fill="none" stroke="#C41818" stroke-width="2.5"
-                    stroke-linecap="round" opacity="0.7"/>
-              <path d="M 98,14 C 92,36 90,62 92,96 C 95,110 98,118 100,122"
-                    fill="none" stroke="#A06030" stroke-width="1.8"
-                    stroke-linecap="round" opacity="0.5"/>
-              <path d="M 100,14 L 100,116"
+              <!-- 立杯金光光圈（D 形弧頂神聖光暈） -->
+              <ellipse cx="100" cy="40" rx="50" ry="50" fill="url(#pg-gold)"/>
+              <!-- 底部小陰影（直立時接地面小） -->
+              <ellipse cx="100" cy="120" rx="52" ry="5" fill="rgba(251,191,36,0.30)"/>
+              <!-- 杯身：半圓 D 形直立，平面在底，弧頂朝上 -->
+              <path d="M 48,110 A 52,70 0 0 0 152,110 Z" fill="url(#pg-yang)"/>
+              <!-- 底部平面邊厚 -->
+              <path d="M 48,110 L 152,110 L 152,118 A 52,9 0 0 1 48,118 Z" fill="#280808"/>
+              <!-- 外弧紅漆面邊線 -->
+              <path d="M 48,110 A 52,70 0 0 0 152,110"
+                    fill="none" stroke="#C41818" stroke-width="2.5" opacity="0.60" stroke-linecap="round"/>
+              <!-- 漆面高光 -->
+              <ellipse cx="84" cy="82" rx="26" ry="20"
+                       fill="url(#pg-spec)" opacity="0.52"
+                       transform="rotate(-10,84,82)"/>
+              <!-- 中心豎線（神蹟之光，由弧頂至平面） -->
+              <path d="M 100,40 L 100,110"
                     stroke="rgba(251,191,36,0.28)" stroke-width="1.2"
                     stroke-linecap="round"/>
+              <!-- 放射光芒（由 D 形弧頂放出） -->
               <g stroke="#fbbf24" stroke-linecap="round" opacity="0.85">
-                <line x1="100" y1="7"  x2="100" y2="-2"  stroke-width="2.5"/>
-                <line x1="109" y1="10" x2="116" y2="2"   stroke-width="2.0"/>
-                <line x1="91"  y1="10" x2="84"  y2="2"   stroke-width="2.0"/>
-                <line x1="116" y1="20" x2="125" y2="13"  stroke-width="1.6"/>
-                <line x1="84"  y1="20" x2="75"  y2="13"  stroke-width="1.6"/>
-                <line x1="120" y1="33" x2="130" y2="27"  stroke-width="1.3"/>
-                <line x1="80"  y1="33" x2="70"  y2="27"  stroke-width="1.3"/>
-                <line x1="122" y1="48" x2="132" y2="44"  stroke-width="1.0"/>
-                <line x1="78"  y1="48" x2="68"  y2="44"  stroke-width="1.0"/>
+                <line x1="100" y1="35" x2="100" y2="24" stroke-width="2.5"/>
+                <line x1="110" y1="38" x2="119" y2="28" stroke-width="2.0"/>
+                <line x1="90"  y1="38" x2="81"  y2="28" stroke-width="2.0"/>
+                <line x1="118" y1="44" x2="128" y2="35" stroke-width="1.6"/>
+                <line x1="82"  y1="44" x2="72"  y2="35" stroke-width="1.6"/>
+                <line x1="122" y1="54" x2="133" y2="46" stroke-width="1.3"/>
+                <line x1="78"  y1="54" x2="67"  y2="46" stroke-width="1.3"/>
+                <line x1="124" y1="65" x2="136" y2="59" stroke-width="1.0"/>
+                <line x1="76"  y1="65" x2="64"  y2="59" stroke-width="1.0"/>
               </g>
-              <text x="100" y="72" text-anchor="middle"
+              <text x="100" y="90" text-anchor="middle"
                     fill="#fbbf24" font-size="15"
                     font-family="'Noto Serif TC',serif" font-weight="bold"
                     letter-spacing="1">立</text>
