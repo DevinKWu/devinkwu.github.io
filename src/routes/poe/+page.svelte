@@ -118,15 +118,14 @@
 -->
 <svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden">
   <defs>
-    <!-- 陽面：紅漆 radial（左上受光，邊緣深暗） -->
-    <radialGradient id="pg-yang" cx="40%" cy="32%" r="62%" fx="38%" fy="28%">
-      <stop offset="0%"   stop-color="#F03030"/>
-      <stop offset="30%"  stop-color="#C41818"/>
-      <stop offset="70%"  stop-color="#8E0E0E"/>
-      <stop offset="100%" stop-color="#620808"/>
-    </radialGradient>
+    <!-- 陽面（平整內側）：均勻紅漆，輕微線性漸層，表現平整無弧感 -->
+    <linearGradient id="pg-yang" x1="38%" y1="0%" x2="62%" y2="100%">
+      <stop offset="0%"   stop-color="#C82020"/>
+      <stop offset="45%"  stop-color="#B01818"/>
+      <stop offset="100%" stop-color="#880E0E"/>
+    </linearGradient>
 
-    <!-- 鏡面高光：橢圓形亮斑 -->
+    <!-- 鏡面高光：橢圓形亮斑（用於陰面凸弧受光） -->
     <radialGradient id="pg-spec" cx="50%" cy="50%" r="50%">
       <stop offset="0%"   stop-color="rgba(255,230,230,0.90)"/>
       <stop offset="40%"  stop-color="rgba(255,200,200,0.45)"/>
@@ -139,11 +138,12 @@
       <stop offset="100%" stop-color="#240404"/>
     </linearGradient>
 
-    <!-- 陰面：竹木質感（淡琥珀→深褐） -->
-    <radialGradient id="pg-yin" cx="42%" cy="36%" r="60%">
-      <stop offset="0%"   stop-color="#D9A870"/>
-      <stop offset="45%"  stop-color="#B07840"/>
-      <stop offset="100%" stop-color="#7A4A1A"/>
+    <!-- 陰面（凸弧外側）：中央亮紅、邊緣深暗，表現圓弧面受光 -->
+    <radialGradient id="pg-yin" cx="40%" cy="32%" r="62%" fx="38%" fy="28%">
+      <stop offset="0%"   stop-color="#F03030"/>
+      <stop offset="30%"  stop-color="#C41818"/>
+      <stop offset="70%"  stop-color="#8E0E0E"/>
+      <stop offset="100%" stop-color="#620808"/>
     </radialGradient>
 
     <!-- 陰面底部厚度 -->
@@ -241,14 +241,12 @@
               <ellipse cx="100" cy="108" rx="70" ry="7" fill="rgba(80,4,4,0.25)"/>
               <!-- 側邊厚度（下移月牙，暗紅） -->
               <path d="M 16,75 A 84,50 0 0 0 184,75 A 84,20 0 0 0 16,75 Z" fill="#3E0606"/>
-              <!-- 陽面：月牙形紅漆凸面 -->
+              <!-- 陽面：月牙形平整內側（均勻紅漆，無凸弧高光） -->
               <path d="M 16,70 A 84,50 0 0 0 184,70 A 84,20 0 0 0 16,70 Z" fill="url(#pg-yang)"/>
-              <!-- 鏡面高光（月牙左上受光區） -->
-              <ellipse cx="68" cy="34" rx="28" ry="10" fill="url(#pg-spec)" opacity="0.75" transform="rotate(-8,68,34)"/>
-              <!-- 鏡面亮線 -->
-              <path d="M 38,44 Q 68,28 104,32" fill="none" stroke="rgba(255,235,235,0.65)" stroke-width="2.5" stroke-linecap="round"/>
-              <!-- 外弧收邊暗線 -->
-              <path d="M 16,70 A 84,50 0 0 0 184,70" fill="none" stroke="rgba(20,0,0,0.35)" stroke-width="1.5"/>
+              <!-- 內弧邊緣淡亮線（光滑平面質感） -->
+              <path d="M 24,68 A 76,43 0 0 0 176,68" fill="none" stroke="rgba(255,210,210,0.22)" stroke-width="3" stroke-linecap="round"/>
+              <!-- 輪廓收邊暗線 -->
+              <path d="M 16,70 A 84,50 0 0 0 184,70 A 84,20 0 0 0 16,70 Z" fill="none" stroke="rgba(20,0,0,0.30)" stroke-width="1.5"/>
               <!-- 陽字（白字深框，月牙中央） -->
               <text x="100" y="46" text-anchor="middle"
                     fill="white" font-size="18"
@@ -266,26 +264,24 @@
               • 底部較深暗木色邊
             -->
             <svg class="poe-svg poe-yin" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
-              <!-- 落地陰影 -->
-              <ellipse cx="100" cy="108" rx="70" ry="7" fill="rgba(40,16,4,0.22)"/>
-              <!-- 側邊厚度（下移月牙，深木色） -->
-              <path d="M 16,75 A 84,50 0 0 0 184,75 A 84,20 0 0 0 16,75 Z" fill="#4A2008"/>
-              <!-- 陰面：月牙形木質凹面 -->
+              <!-- 落地陰影（凸弧面，陰影稍深） -->
+              <ellipse cx="100" cy="108" rx="70" ry="7" fill="rgba(80,4,4,0.30)"/>
+              <!-- 側邊厚度（下移月牙，暗紅） -->
+              <path d="M 16,75 A 84,50 0 0 0 184,75 A 84,20 0 0 0 16,75 Z" fill="#3E0606"/>
+              <!-- 陰面：月牙形凸弧外側（強烈弧面受光） -->
               <path d="M 16,70 A 84,50 0 0 0 184,70 A 84,20 0 0 0 16,70 Z" fill="url(#pg-yin)"/>
-              <!-- 外弧紅漆邊（月牙凸側可見紅漆） -->
-              <path d="M 16,70 A 84,50 0 0 0 184,70" fill="none" stroke="#8E1212" stroke-width="3.5" opacity="0.55"/>
-              <!-- 木紋弧線（隨月牙輪廓） -->
-              <path d="M 28,68 A 74,44 0 0 0 172,68" fill="none" stroke="rgba(140,85,30,0.28)" stroke-width="1.3" stroke-linecap="round"/>
-              <path d="M 42,65 A 60,37 0 0 0 158,65" fill="none" stroke="rgba(145,88,32,0.22)" stroke-width="1.1" stroke-linecap="round"/>
-              <path d="M 60,62 A 42,29 0 0 0 140,62" fill="none" stroke="rgba(150,92,35,0.18)" stroke-width="1.0" stroke-linecap="round"/>
-              <!-- 木面亞光漫反射 -->
-              <ellipse cx="66" cy="36" rx="24" ry="9" fill="rgba(220,175,110,0.18)" transform="rotate(-6,66,36)"/>
+              <!-- 鏡面高光（凸弧左上受光最強處） -->
+              <ellipse cx="68" cy="34" rx="28" ry="10" fill="url(#pg-spec)" opacity="0.78" transform="rotate(-8,68,34)"/>
+              <!-- 鏡面亮線（弧面高光反射） -->
+              <path d="M 38,44 Q 68,28 104,32" fill="none" stroke="rgba(255,235,235,0.68)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- 外弧收邊暗線 -->
+              <path d="M 16,70 A 84,50 0 0 0 184,70" fill="none" stroke="rgba(20,0,0,0.35)" stroke-width="1.5"/>
               <!-- 陰字（白字深框，月牙中央） -->
               <text x="100" y="46" text-anchor="middle"
                     fill="white" font-size="18"
                     font-family="'Noto Serif TC',serif" font-weight="bold"
                     letter-spacing="2"
-                    stroke="#3C1A04" stroke-width="3" paint-order="stroke">陰</text>
+                    stroke="#660808" stroke-width="3" paint-order="stroke">陰</text>
             </svg>
 
           {:else}
@@ -373,14 +369,12 @@
               <ellipse cx="100" cy="108" rx="70" ry="7" fill="rgba(80,4,4,0.25)"/>
               <!-- 側邊厚度（下移月牙，暗紅） -->
               <path d="M 16,75 A 84,50 0 0 0 184,75 A 84,20 0 0 0 16,75 Z" fill="#3E0606"/>
-              <!-- 陽面：月牙形紅漆凸面 -->
+              <!-- 陽面：月牙形平整內側（均勻紅漆，無凸弧高光） -->
               <path d="M 16,70 A 84,50 0 0 0 184,70 A 84,20 0 0 0 16,70 Z" fill="url(#pg-yang)"/>
-              <!-- 鏡面高光（月牙左上受光區） -->
-              <ellipse cx="68" cy="34" rx="28" ry="10" fill="url(#pg-spec)" opacity="0.75" transform="rotate(-8,68,34)"/>
-              <!-- 鏡面亮線 -->
-              <path d="M 38,44 Q 68,28 104,32" fill="none" stroke="rgba(255,235,235,0.65)" stroke-width="2.5" stroke-linecap="round"/>
-              <!-- 外弧收邊暗線 -->
-              <path d="M 16,70 A 84,50 0 0 0 184,70" fill="none" stroke="rgba(20,0,0,0.35)" stroke-width="1.5"/>
+              <!-- 內弧邊緣淡亮線（光滑平面質感） -->
+              <path d="M 24,68 A 76,43 0 0 0 176,68" fill="none" stroke="rgba(255,210,210,0.22)" stroke-width="3" stroke-linecap="round"/>
+              <!-- 輪廓收邊暗線 -->
+              <path d="M 16,70 A 84,50 0 0 0 184,70 A 84,20 0 0 0 16,70 Z" fill="none" stroke="rgba(20,0,0,0.30)" stroke-width="1.5"/>
               <!-- 陽字（白字深框，月牙中央） -->
               <text x="100" y="46" text-anchor="middle"
                     fill="white" font-size="18"
@@ -390,26 +384,24 @@
             </svg>
           {:else if block2 === 1}
             <svg class="poe-svg poe-yin" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
-              <!-- 落地陰影 -->
-              <ellipse cx="100" cy="108" rx="70" ry="7" fill="rgba(40,16,4,0.22)"/>
-              <!-- 側邊厚度（下移月牙，深木色） -->
-              <path d="M 16,75 A 84,50 0 0 0 184,75 A 84,20 0 0 0 16,75 Z" fill="#4A2008"/>
-              <!-- 陰面：月牙形木質凹面 -->
+              <!-- 落地陰影（凸弧面，陰影稍深） -->
+              <ellipse cx="100" cy="108" rx="70" ry="7" fill="rgba(80,4,4,0.30)"/>
+              <!-- 側邊厚度（下移月牙，暗紅） -->
+              <path d="M 16,75 A 84,50 0 0 0 184,75 A 84,20 0 0 0 16,75 Z" fill="#3E0606"/>
+              <!-- 陰面：月牙形凸弧外側（強烈弧面受光） -->
               <path d="M 16,70 A 84,50 0 0 0 184,70 A 84,20 0 0 0 16,70 Z" fill="url(#pg-yin)"/>
-              <!-- 外弧紅漆邊（月牙凸側可見紅漆） -->
-              <path d="M 16,70 A 84,50 0 0 0 184,70" fill="none" stroke="#8E1212" stroke-width="3.5" opacity="0.55"/>
-              <!-- 木紋弧線（隨月牙輪廓） -->
-              <path d="M 28,68 A 74,44 0 0 0 172,68" fill="none" stroke="rgba(140,85,30,0.28)" stroke-width="1.3" stroke-linecap="round"/>
-              <path d="M 42,65 A 60,37 0 0 0 158,65" fill="none" stroke="rgba(145,88,32,0.22)" stroke-width="1.1" stroke-linecap="round"/>
-              <path d="M 60,62 A 42,29 0 0 0 140,62" fill="none" stroke="rgba(150,92,35,0.18)" stroke-width="1.0" stroke-linecap="round"/>
-              <!-- 木面亞光漫反射 -->
-              <ellipse cx="66" cy="36" rx="24" ry="9" fill="rgba(220,175,110,0.18)" transform="rotate(-6,66,36)"/>
+              <!-- 鏡面高光（凸弧左上受光最強處） -->
+              <ellipse cx="68" cy="34" rx="28" ry="10" fill="url(#pg-spec)" opacity="0.78" transform="rotate(-8,68,34)"/>
+              <!-- 鏡面亮線（弧面高光反射） -->
+              <path d="M 38,44 Q 68,28 104,32" fill="none" stroke="rgba(255,235,235,0.68)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- 外弧收邊暗線 -->
+              <path d="M 16,70 A 84,50 0 0 0 184,70" fill="none" stroke="rgba(20,0,0,0.35)" stroke-width="1.5"/>
               <!-- 陰字（白字深框，月牙中央） -->
               <text x="100" y="46" text-anchor="middle"
                     fill="white" font-size="18"
                     font-family="'Noto Serif TC',serif" font-weight="bold"
                     letter-spacing="2"
-                    stroke="#3C1A04" stroke-width="3" paint-order="stroke">陰</text>
+                    stroke="#660808" stroke-width="3" paint-order="stroke">陰</text>
             </svg>
           {:else}
             <svg class="poe-svg poe-li" viewBox="0 0 200 132" xmlns="http://www.w3.org/2000/svg">
@@ -723,7 +715,7 @@
   .poe-yin {
     filter:
       drop-shadow(0 6px 16px rgba(0,0,0,0.7))
-      drop-shadow(0 0 10px rgba(140,60,10,0.40));
+      drop-shadow(0 0 18px rgba(200,24,24,0.50));
   }
 
   .poe-li {
