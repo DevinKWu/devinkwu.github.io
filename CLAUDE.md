@@ -95,6 +95,9 @@ src/
 - **聯絡表單**: 透過 GitHub Issues 實現，點擊送出會開啟預填好的 Issue 頁面（需 GitHub 帳號，訊息公開）
 - **Tailwind v4 主題**: 在 `app.css` 中使用 `@theme` 定義 `--color-primary-*` 色階，元件中以 `primary-*` 使用
 - **響應式設計**: 使用 Tailwind 斷點（`sm:`, `md:`, `lg:`），行動版漢堡選單
+- **捲動快捷按鈕**: `+layout.svelte` 中有兩個固定位置的圓形按鈕，透過 `$effect` 監聽被動滾動事件控制顯示：
+  - **回到頂部**（`bottom-6 right-6`）：scrollY > 300px 時顯示，點擊平滑捲動至頂部
+  - **前往頁尾**（`bottom-20 right-6`）：距底部 > 300px 時顯示，點擊平滑捲動至底部；hover 效果為向下微移（`hover:translate-y-0.5`）
 - **擲杯頁面（/poe）**: 獨立互動頁面，使用 Svelte scoped `<style>` 實作視覺效果，localStorage 儲存歷史紀錄，`$effect` 監聽狀態變更。支援批次擲杯（1–10000 次）、連線紀錄、祈求折疊顯示。N > 50 時略過逐筆 DOM 渲染以避免卡頓
 
 ## Conventions
