@@ -9,7 +9,14 @@
   let throwCount = $state(1);
   let currentThrows = $state([]); // [{b1, b2, res}, ...]
 
-  // 歷史紀錄：{ id, time, prayer, block1, block2, result }
+  // N 超過此值時不渲染逐筆清單（避免大量 DOM 節點卡頓）
+  const DETAIL_LIMIT = 50;
+
+  // 折疊狀態
+  let guideOpen   = $state(false); // 說明區預設收合
+  let historyOpen = $state(true);  // 歷史紀錄預設展開
+
+  // 歷史紀錄：{ id, time, prayer, throwCount, stats, streaks, throws? }
   let history = $state([]);
   let historyLoaded = false;
 
@@ -95,13 +102,18 @@
       const saved = localStorage.getItem('poe-history');
       if (saved) {
         history = JSON.parse(saved);
-        // 舊格式 migration：{ block1, block2, result } → { throws: [{b1, b2, res}] }
-        history = history.map(e =>
-          e.throws ? e : {
+        // migrate：舊格式 → 新格式 { throwCount, stats, streaks, throws? }
+        history = history.map(e => {
+          if (e.stats) return e; // 已是新格式
+          const throws = e.throws ?? [{ b1: e.block1, b2: e.block2, res: e.result }];
+          return {
             id: e.id, time: e.time, prayer: e.prayer,
-            throws: [{ b1: e.block1, b2: e.block2, res: e.result }],
-          }
-        );
+            throwCount: throws.length,
+            stats: computeStats(throws),
+            streaks: computeStreaks(throws),
+            throws: throws.length <= DETAIL_LIMIT ? throws : null,
+          };
+        });
       }
     } catch {}
     const savedColor = localStorage.getItem('poe-color');
@@ -230,8 +242,16 @@
 
       const now = Date.now();
       const time = new Date().toLocaleString('zh-TW', { hour12: false });
+      const stats = computeStats(newThrows);
+      const streaks = computeStreaks(newThrows);
       history = [
-        { id: now, time, prayer: prayer.trim(), throws: newThrows },
+        {
+          id: now, time, prayer: prayer.trim(),
+          throwCount: newThrows.length,
+          stats,
+          streaks,
+          throws: newThrows.length <= DETAIL_LIMIT ? newThrows : null,
+        },
         ...history,
       ].slice(0, 100);
     }, 1100);
@@ -304,7 +324,6 @@
 
     <!-- 標題區 -->
     <header class="w-full flex flex-col items-center gap-4">
-      <a href="/" class="self-start text-sm text-gray-500 hover:text-primary-600 transition-colors no-underline">← 回首頁</a>
       <div class="text-center">
         <div class="flex items-center gap-3 justify-center mb-3">
           <span class="block w-11 h-px bg-gradient-to-r from-transparent to-gray-300"></span>
@@ -320,6 +339,54 @@
         </div>
       </div>
     </header>
+
+    <!-- 說明區（可折疊，預設收合） -->
+    <div class="w-full rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+      <button
+        class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 transition-colors cursor-pointer"
+        onclick={() => guideOpen = !guideOpen}
+        aria-expanded={guideOpen}
+      >
+        <h2 class="flex items-center gap-3 text-gray-400 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">
+          <span class="block w-8 h-px bg-gradient-to-r from-transparent to-gray-300"></span>
+          擲杯說明
+          <span class="block w-8 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
+        </h2>
+        <span class="text-gray-400 text-[0.6rem] transition-transform duration-200 {guideOpen ? 'rotate-180' : ''}" aria-hidden="true">▼</span>
+      </button>
+      {#if guideOpen}
+        <div class="px-4 pb-4 flex flex-col gap-3 border-t border-gray-100">
+          <div class="grid grid-cols-3 gap-3 pt-3">
+            <div class="text-center p-4 rounded-xl border border-emerald-200 bg-emerald-50 hover:-translate-y-0.5 transition-transform">
+              <div class="text-emerald-600 text-xl font-bold mb-1" style="font-family:'Noto Serif TC',serif">聖</div>
+              <div class="text-emerald-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">聖杯</div>
+              <div class="text-gray-500 text-xs mt-1">一陽一陰</div>
+              <div class="text-gray-500 text-xs">神明允許</div>
+            </div>
+            <div class="text-center p-4 rounded-xl border border-gray-200 bg-gray-50 hover:-translate-y-0.5 transition-transform">
+              <div class="text-gray-600 text-xl font-bold mb-1" style="font-family:'Noto Serif TC',serif">陰</div>
+              <div class="text-gray-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">陰杯</div>
+              <div class="text-gray-500 text-xs mt-1">兩個平面</div>
+              <div class="text-gray-500 text-xs">神明不允</div>
+            </div>
+            <div class="text-center p-4 rounded-xl border border-amber-200 bg-amber-50 hover:-translate-y-0.5 transition-transform">
+              <div class="text-amber-600 text-xl font-bold mb-1" style="font-family:'Noto Serif TC',serif">笑</div>
+              <div class="text-amber-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">笑杯</div>
+              <div class="text-gray-500 text-xs mt-1">兩個弧面</div>
+              <div class="text-gray-500 text-xs">再擲一次</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 p-3 rounded-xl border border-yellow-200 bg-yellow-50 hover:-translate-y-0.5 transition-transform">
+            <div class="text-yellow-600 text-2xl font-bold min-w-8 text-center" style="font-family:'Noto Serif TC',serif">立</div>
+            <div>
+              <div class="text-yellow-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">立杯</div>
+              <div class="text-gray-500 text-xs mt-0.5">筊杯直立不倒，9007兆分之一</div>
+              <div class="text-gray-500 text-xs">神蹟顯現，極為罕見</div>
+            </div>
+          </div>
+        </div>
+      {/if}
+    </div>
 
     <!-- 祈求欄 -->
     <div class="w-full flex flex-col gap-2">
@@ -560,7 +627,7 @@
       <input
         id="throw-count"
         type="number"
-        min="1" max="10"
+        min="1" max="10000"
         bind:value={throwCount}
         class="w-14 rounded-lg border border-gray-300 px-2 py-1.5 text-center text-sm text-gray-700
                focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none
@@ -605,24 +672,31 @@
       {:else}
         <!-- N>1：全部結果 compact 清單 -->
         <div class="w-full rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-          <ul class="divide-y divide-gray-100">
-            {#each currentThrows as t, i}
-              <li class="flex items-center gap-3 px-4 py-2.5">
-                <span class="text-[0.7rem] text-gray-400 w-10 shrink-0"
-                      style="font-family:'Noto Serif TC',serif">第{i+1}擲</span>
-                <span class="mini-block {t.b1===0?'mini-yang':t.b1===1?'mini-yin':'mini-li'}">
-                  {t.b1===0?'陽':t.b1===1?'陰':'立'}
-                </span>
-                <span class="text-gray-300 text-[0.7rem]">·</span>
-                <span class="mini-block {t.b2===0?'mini-yang':t.b2===1?'mini-yin':'mini-li'}">
-                  {t.b2===0?'陽':t.b2===1?'陰':'立'}
-                </span>
-                <span class="text-gray-300 text-[0.72rem]">→</span>
-                <span class="text-sm font-bold tracking-wide entry-result-{t.res}"
-                      style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
-              </li>
-            {/each}
-          </ul>
+          {#if currentThrows.length <= DETAIL_LIMIT}
+            <ul class="divide-y divide-gray-100">
+              {#each currentThrows as t, i}
+                <li class="flex items-center gap-3 px-4 py-2.5">
+                  <span class="text-[0.7rem] text-gray-400 w-10 shrink-0"
+                        style="font-family:'Noto Serif TC',serif">第{i+1}擲</span>
+                  <span class="mini-block {t.b1===0?'mini-yang':t.b1===1?'mini-yin':'mini-li'}">
+                    {t.b1===0?'陽':t.b1===1?'陰':'立'}
+                  </span>
+                  <span class="text-gray-300 text-[0.7rem]">·</span>
+                  <span class="mini-block {t.b2===0?'mini-yang':t.b2===1?'mini-yin':'mini-li'}">
+                    {t.b2===0?'陽':t.b2===1?'陰':'立'}
+                  </span>
+                  <span class="text-gray-300 text-[0.72rem]">→</span>
+                  <span class="text-sm font-bold tracking-wide entry-result-{t.res}"
+                        style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+                </li>
+              {/each}
+            </ul>
+          {:else}
+            <div class="px-4 py-3 text-[0.72rem] text-gray-400 border-b border-gray-100"
+                 style="font-family:'Noto Serif TC',serif">
+              共 {currentThrows.length} 擲，顯示統計與連線摘要
+            </div>
+          {/if}
           <!-- 統計 bar -->
           <div class="flex flex-wrap gap-x-4 gap-y-1 px-4 py-2.5 bg-gray-50 border-t border-gray-100">
             <span class="text-[0.7rem] text-gray-400 tracking-wider mr-1"
@@ -664,52 +738,21 @@
       <p class="text-gray-400 text-sm tracking-widest" style="font-family:'Noto Serif TC',serif">誠心默念，點擊擲杯</p>
     {/if}
 
-    <!-- 說明區 -->
-    <div class="w-full pt-8 border-t border-gray-200">
-      <h2 class="flex items-center justify-center gap-3 text-gray-400 text-xs tracking-widest uppercase mb-5" style="font-family:'Noto Serif TC',serif">
-        <span class="block flex-1 max-w-[55px] h-px bg-gradient-to-r from-transparent to-gray-300"></span>
-        擲杯說明
-        <span class="block flex-1 max-w-[55px] h-px bg-gradient-to-l from-transparent to-gray-300"></span>
-      </h2>
-      <div class="grid grid-cols-3 gap-3 mb-3">
-        <div class="text-center p-4 rounded-xl border border-emerald-200 bg-emerald-50 hover:-translate-y-0.5 transition-transform">
-          <div class="text-emerald-600 text-xl font-bold mb-1" style="font-family:'Noto Serif TC',serif">聖</div>
-          <div class="text-emerald-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">聖杯</div>
-          <div class="text-gray-500 text-xs mt-1">一陽一陰</div>
-          <div class="text-gray-500 text-xs">神明允許</div>
-        </div>
-        <div class="text-center p-4 rounded-xl border border-gray-200 bg-gray-50 hover:-translate-y-0.5 transition-transform">
-          <div class="text-gray-600 text-xl font-bold mb-1" style="font-family:'Noto Serif TC',serif">陰</div>
-          <div class="text-gray-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">陰杯</div>
-          <div class="text-gray-500 text-xs mt-1">兩個平面</div>
-          <div class="text-gray-500 text-xs">神明不允</div>
-        </div>
-        <div class="text-center p-4 rounded-xl border border-amber-200 bg-amber-50 hover:-translate-y-0.5 transition-transform">
-          <div class="text-amber-600 text-xl font-bold mb-1" style="font-family:'Noto Serif TC',serif">笑</div>
-          <div class="text-amber-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">笑杯</div>
-          <div class="text-gray-500 text-xs mt-1">兩個弧面</div>
-          <div class="text-gray-500 text-xs">再擲一次</div>
-        </div>
-      </div>
-      <!-- 立杯：橫排 -->
-      <div class="flex items-center gap-4 p-3 rounded-xl border border-yellow-200 bg-yellow-50 hover:-translate-y-0.5 transition-transform">
-        <div class="text-yellow-600 text-2xl font-bold min-w-8 text-center" style="font-family:'Noto Serif TC',serif">立</div>
-        <div>
-          <div class="text-yellow-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">立杯</div>
-          <div class="text-gray-500 text-xs mt-0.5">筊杯直立不倒，9007兆分之一</div>
-          <div class="text-gray-500 text-xs">神蹟顯現，極為罕見</div>
-        </div>
-      </div>
-    </div>
-
     <!-- 歷史紀錄 -->
     <div class="w-full pt-8 border-t border-gray-200">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="flex items-center gap-3 text-gray-400 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">
-          <span class="block w-11 h-px bg-gradient-to-r from-transparent to-gray-300"></span>
-          擲杯紀錄
-          <span class="block w-11 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
-        </h2>
+        <button
+          class="flex items-center gap-2 cursor-pointer"
+          onclick={() => historyOpen = !historyOpen}
+          aria-expanded={historyOpen}
+        >
+          <h2 class="flex items-center gap-3 text-gray-400 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">
+            <span class="block w-11 h-px bg-gradient-to-r from-transparent to-gray-300"></span>
+            擲杯紀錄{#if history.length > 0}<span class="text-gray-300 font-normal">（{history.length}）</span>{/if}
+            <span class="block w-11 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
+          </h2>
+          <span class="text-gray-400 text-[0.6rem] transition-transform duration-200 {historyOpen ? 'rotate-180' : ''}" aria-hidden="true">▼</span>
+        </button>
         {#if history.length > 0}
           <button
             class="text-xs text-gray-400 border border-gray-200 rounded-full px-3 py-0.5 hover:text-gray-600 hover:border-gray-300 transition-colors bg-transparent cursor-pointer"
@@ -718,81 +761,101 @@
         {/if}
       </div>
 
+      {#if historyOpen}
       {#if history.length === 0}
         <p class="text-center text-gray-400 text-sm py-6 tracking-wider" style="font-family:'Noto Serif TC',serif">尚無擲杯紀錄</p>
       {:else}
         <ul class="space-y-2">
           {#each history as entry (entry.id)}
-            {@const isBatch = entry.throws.length > 1}
-            {@const batchStats = isBatch ? computeStats(entry.throws) : null}
-            {@const batchStreaks = isBatch ? computeStreaks(entry.throws) : null}
-            <li class="history-entry flex flex-col gap-1.5 px-4 py-3 rounded-lg bg-white border border-gray-100 border-l-2 history-entry-{entry.throws[0].res} shadow-sm">
-              <!-- header: time + throw count badge -->
-              <div class="flex items-baseline gap-2 flex-wrap">
-                <span class="text-[0.7rem] text-gray-400 tabular-nums">{entry.time}</span>
-                {#if isBatch}
-                  <span class="text-[0.6rem] text-gray-400 border border-gray-200 rounded-full px-1.5"
-                        style="font-family:'Noto Serif TC',serif">{entry.throws.length}擲</span>
-                {/if}
-              </div>
-              <!-- 問題（可折疊） -->
-              {#if entry.prayer}
-                <details class="prayer-details">
-                  <summary style="font-family:'Noto Serif TC',serif">祈求內容</summary>
-                  <p class="prayer-body">{entry.prayer}</p>
-                </details>
-              {/if}
+            {@const isBatch = entry.throwCount > 1}
+            {@const firstRes = entry.streaks[0]?.result ?? 'sheng'}
+            <li class="history-entry rounded-lg bg-white border border-gray-100 border-l-2 history-entry-{firstRes} shadow-sm overflow-hidden">
+              <details class="entry-details">
+                <!-- 摘要列（時間 + 次數 + 快速結果） -->
+                <summary class="flex items-center gap-2 flex-wrap px-4 py-3 cursor-pointer select-none list-none">
+                  <span class="text-[0.7rem] text-gray-400 tabular-nums">{entry.time}</span>
+                  {#if isBatch}
+                    <span class="text-[0.6rem] text-gray-400 border border-gray-200 rounded-full px-1.5"
+                          style="font-family:'Noto Serif TC',serif">{entry.throwCount}擲</span>
+                  {/if}
+                  <span class="ml-auto flex items-center gap-1.5">
+                    {#if !isBatch && entry.throws}
+                      {@const t = entry.throws[0]}
+                      <span class="entry-result-{t.res} text-xs font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+                    {:else if isBatch}
+                      <span class="text-[0.65rem] text-gray-400">
+                        {[
+                          entry.stats.sheng ? `聖×${entry.stats.sheng}` : '',
+                          entry.stats.yin   ? `陰×${entry.stats.yin}` : '',
+                          entry.stats.xiao  ? `笑×${entry.stats.xiao}` : '',
+                          entry.stats.li    ? `立×${entry.stats.li}` : '',
+                        ].filter(Boolean).join(' ')}
+                      </span>
+                    {/if}
+                    <span class="entry-chevron text-gray-300 text-[0.55rem]">▸</span>
+                  </span>
+                </summary>
+                <!-- 展開內容 -->
+                <div class="px-4 pb-3 flex flex-col gap-1.5 border-t border-gray-100 pt-2">
+                  {#if entry.prayer}
+                    <details class="prayer-details">
+                      <summary style="font-family:'Noto Serif TC',serif">祈求內容</summary>
+                      <p class="prayer-body">{entry.prayer}</p>
+                    </details>
+                  {/if}
 
-              {#if !isBatch}
-                <!-- 單擲：mini-block pair + result -->
-                <div class="flex items-center gap-2">
-                  <div class="flex items-center gap-1">
-                    <span class="mini-block {entry.throws[0].b1===0?'mini-yang':entry.throws[0].b1===1?'mini-yin':'mini-li'}">
-                      {entry.throws[0].b1===0?'陽':entry.throws[0].b1===1?'陰':'立'}
-                    </span>
-                    <span class="text-gray-300 text-[0.7rem]">·</span>
-                    <span class="mini-block {entry.throws[0].b2===0?'mini-yang':entry.throws[0].b2===1?'mini-yin':'mini-li'}">
-                      {entry.throws[0].b2===0?'陽':entry.throws[0].b2===1?'陰':'立'}
-                    </span>
-                  </div>
-                  <span class="text-gray-300 text-[0.72rem]">→</span>
-                  <span class="entry-result-{entry.throws[0].res} text-sm font-bold tracking-wide"
-                        style="font-family:'Noto Serif TC',serif">{resultMap[entry.throws[0].res].name}</span>
+                  {#if !isBatch}
+                    {@const t = entry.throws[0]}
+                    <div class="flex items-center gap-2">
+                      <div class="flex items-center gap-1">
+                        <span class="mini-block {t.b1===0?'mini-yang':t.b1===1?'mini-yin':'mini-li'}">
+                          {t.b1===0?'陽':t.b1===1?'陰':'立'}
+                        </span>
+                        <span class="text-gray-300 text-[0.7rem]">·</span>
+                        <span class="mini-block {t.b2===0?'mini-yang':t.b2===1?'mini-yin':'mini-li'}">
+                          {t.b2===0?'陽':t.b2===1?'陰':'立'}
+                        </span>
+                      </div>
+                      <span class="text-gray-300 text-[0.72rem]">→</span>
+                      <span class="entry-result-{t.res} text-sm font-bold tracking-wide"
+                            style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+                    </div>
+                  {:else}
+                    {#if entry.throws}
+                      <div class="flex flex-wrap gap-1">
+                        {#each entry.throws as t, i}
+                          <span class="inline-flex items-center gap-0.5 text-[0.65rem] px-1.5 py-0.5 rounded bg-gray-50 border border-gray-100">
+                            <span class="text-gray-400" style="font-family:'Noto Serif TC',serif">第{i+1}擲</span>
+                            <span class="entry-result-{t.res} font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+                          </span>
+                        {/each}
+                      </div>
+                    {/if}
+                    <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[0.65rem]">
+                      <span class="text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">統計</span>
+                      {#if entry.stats.sheng}<span class="entry-result-sheng font-semibold">聖杯×{entry.stats.sheng}</span>{/if}
+                      {#if entry.stats.yin}<span class="entry-result-yin font-semibold">陰杯×{entry.stats.yin}</span>{/if}
+                      {#if entry.stats.xiao}<span class="entry-result-xiao font-semibold">笑杯×{entry.stats.xiao}</span>{/if}
+                      {#if entry.stats.li}<span class="entry-result-li font-semibold">立杯×{entry.stats.li}！</span>{/if}
+                    </div>
+                    <div class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.65rem]">
+                      <span class="text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">連線</span>
+                      {#each entry.streaks as streak, si}
+                        <span class="inline-flex items-center gap-0.5">
+                          <span class="text-gray-400" style="font-family:'Noto Serif TC',serif">第{streak.startIdx}擲</span>
+                          <span class="entry-result-{streak.result} font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[streak.result].name}</span>
+                          {#if streak.count > 1}<span class="text-gray-400">連續{streak.count}次</span>{/if}
+                        </span>
+                        {#if si < entry.streaks.length - 1}<span class="text-gray-300">›</span>{/if}
+                      {/each}
+                    </div>
+                  {/if}
                 </div>
-              {:else}
-                <!-- 批次：每擲小標籤（flex-wrap） -->
-                <div class="flex flex-wrap gap-1">
-                  {#each entry.throws as t, i}
-                    <span class="inline-flex items-center gap-0.5 text-[0.65rem] px-1.5 py-0.5 rounded bg-gray-50 border border-gray-100">
-                      <span class="text-gray-400" style="font-family:'Noto Serif TC',serif">第{i+1}擲</span>
-                      <span class="entry-result-{t.res} font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
-                    </span>
-                  {/each}
-                </div>
-                <!-- 統計 -->
-                <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[0.65rem]">
-                  <span class="text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">統計</span>
-                  {#if batchStats.sheng}<span class="entry-result-sheng font-semibold">聖杯×{batchStats.sheng}</span>{/if}
-                  {#if batchStats.yin}<span class="entry-result-yin font-semibold">陰杯×{batchStats.yin}</span>{/if}
-                  {#if batchStats.xiao}<span class="entry-result-xiao font-semibold">笑杯×{batchStats.xiao}</span>{/if}
-                  {#if batchStats.li}<span class="entry-result-li font-semibold">立杯×{batchStats.li}！</span>{/if}
-                </div>
-                <!-- 連線 -->
-                <div class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.65rem]">
-                  <span class="text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">連線</span>
-                  {#each batchStreaks as streak, si}
-                    <span class="inline-flex items-center gap-0.5">
-                      <span class="text-gray-400" style="font-family:'Noto Serif TC',serif">第{streak.startIdx}擲</span>
-                      <span class="entry-result-{streak.result} font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[streak.result].name}</span>
-                      {#if streak.count > 1}<span class="text-gray-400">連續{streak.count}次</span>{/if}
-                    </span>
-                    {#if si < batchStreaks.length - 1}<span class="text-gray-300">›</span>{/if}
-                  {/each}
-                </div>
-              {/if}
+              </details>
             </li>
           {/each}
         </ul>
+      {/if}
       {/if}
     </div>
 
@@ -970,4 +1033,15 @@
     font-style: italic;
     white-space: pre-wrap;
   }
+
+  /* ── 每條紀錄折疊 ── */
+  .entry-details > summary { list-style: none; }
+  .entry-details > summary::-webkit-details-marker { display: none; }
+  .entry-details > summary:hover { background: #f9fafb; }
+  .entry-details[open] > summary .entry-chevron {
+    display: inline-block;
+    transform: rotate(90deg);
+    transition: transform 0.15s ease;
+  }
+  .entry-chevron { transition: transform 0.15s ease; }
 </style>
