@@ -143,7 +143,7 @@
       name: '立杯',
       subtitle: '神蹟顯現',
       message: '萬中無一的神蹟！筊杯直立而不倒，此乃神明強烈降臨之徵兆，所求之事意義非凡，必得虔誠感恩並認真對待此天啟。',
-      note: '筊杯直立，9007兆分之一的奇蹟',
+      note: '筊杯直立，萬分之一的奇蹟',
       colorClass: 'result-li',
     },
     sheng: {
@@ -225,8 +225,8 @@
     currentThrows = [];
 
     setTimeout(() => {
-      // 每支筊杯有 1/9007199254740991 機率直立（立杯）
-      const rollBlock = () => Math.random() < 1 / Number.MAX_SAFE_INTEGER ? 2 : Math.floor(Math.random() * 2);
+      // 每支筊杯有 1/10000 機率直立（立杯）
+      const rollBlock = () => Math.floor(Math.random() * 10000) === 0 ? 2 : Math.floor(Math.random() * 2);
       const newThrows = [];
       for (let i = 0; i < throwCount; i++) {
         const b1 = rollBlock(), b2 = rollBlock();
@@ -380,7 +380,7 @@
             <div class="text-yellow-600 text-2xl font-bold min-w-8 text-center" style="font-family:'Noto Serif TC',serif">立</div>
             <div>
               <div class="text-yellow-600 font-bold text-sm" style="font-family:'Noto Serif TC',serif">立杯</div>
-              <div class="text-gray-500 text-xs mt-0.5">筊杯直立不倒，9007兆分之一</div>
+              <div class="text-gray-500 text-xs mt-0.5">筊杯直立不倒，萬分之一</div>
               <div class="text-gray-500 text-xs">神蹟顯現，極為罕見</div>
             </div>
           </div>
