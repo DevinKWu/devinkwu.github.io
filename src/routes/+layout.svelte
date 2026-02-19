@@ -6,6 +6,7 @@
 
   let { children } = $props();
   let mobileMenuOpen = $state(false);
+  let showScrollTop = $state(false);
 
   function toggleMenu() {
     mobileMenuOpen = !mobileMenuOpen;
@@ -14,6 +15,18 @@
   function closeMenu() {
     mobileMenuOpen = false;
   }
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  $effect(() => {
+    function onScroll() {
+      showScrollTop = window.scrollY > 300;
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  });
 </script>
 
 <!-- Navbar -->
@@ -116,3 +129,16 @@
     </div>
   </div>
 </footer>
+
+<!-- Scroll to Top Button -->
+{#if showScrollTop}
+  <button
+    onclick={scrollToTop}
+    class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-primary-600 text-white shadow-lg shadow-primary-500/40 hover:bg-primary-700 hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center"
+    aria-label="回到頂部"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
+    </svg>
+  </button>
+{/if}
