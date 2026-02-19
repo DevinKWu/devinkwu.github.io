@@ -44,6 +44,42 @@ src/
         └── +page.svelte             # 擲杯占卜互動頁面（/poe）
 ```
 
+## /poe 擲杯頁面架構
+
+### 狀態
+
+| 變數 | 類型 | 說明 |
+|------|------|------|
+| `block1` / `block2` | `0\|1\|2\|null` | 當次第 1 擲的兩片筊杯面（0=陽、1=陰、2=立、null=未擲），驅動 SVG 動畫 |
+| `currentThrows` | `{b1,b2,res}[]` | 當次批次所有擲的結果 |
+| `throwCount` | `number` | 一次擲幾次（1–10，預設 1） |
+| `isAnimating` | `boolean` | 動畫進行中旗標 |
+| `history` | `HistoryEntry[]` | 歷史紀錄，存於 localStorage |
+
+### Derived
+
+- `resultInfo`：`currentThrows.length === 1` 時的結果卡片資料（N=1 模式用）
+- `throwStats`：當次批次各結果計次 `{sheng,yin,xiao,li}`
+- `streaks`：當次批次的連線紀錄（run-length encoding），格式 `{startIdx,result,count}[]`
+- `poeColor`：依 `poeColorId` 計算的 SVG 漸層色值物件
+
+### 結果顯示邏輯
+
+- **N=1**：大型結果卡片（名稱、副標、說明文字）
+- **N>1**：compact 清單（第N擲 + mini-block 標籤）+ 統計 bar + 連線紀錄
+
+### 歷史紀錄格式
+
+```js
+// 新格式（批次）
+{ id, time, prayer, throws: [{b1, b2, res}] }
+
+// 舊格式（逐筆，onMount 自動 migrate）
+{ id, time, prayer, block1, block2, result }
+```
+
+歷史顯示：單擲顯示 mini-block pair，批次顯示每擲標籤 + 統計 + 連線。祈求文字以 `<details>` 折疊。
+
 ## Key Architecture Decisions
 
 - **單頁式設計**: 所有區塊在 `+page.svelte`，透過錨點導覽（#about, #skills, #projects, #contact）
@@ -51,7 +87,7 @@ src/
 - **聯絡表單**: 透過 GitHub Issues 實現，點擊送出會開啟預填好的 Issue 頁面（需 GitHub 帳號，訊息公開）
 - **Tailwind v4 主題**: 在 `app.css` 中使用 `@theme` 定義 `--color-primary-*` 色階，元件中以 `primary-*` 使用
 - **響應式設計**: 使用 Tailwind 斷點（`sm:`, `md:`, `lg:`），行動版漢堡選單
-- **擲杯頁面（/poe）**: 獨立互動頁面，使用 Svelte scoped `<style>` 實作深色主題，localStorage 儲存歷史紀錄，`$effect` 監聽狀態變更
+- **擲杯頁面（/poe）**: 獨立互動頁面，使用 Svelte scoped `<style>` 實作視覺效果，localStorage 儲存歷史紀錄，`$effect` 監聽狀態變更。支援批次擲杯（1–10 次）、連線紀錄、祈求折疊顯示
 
 ## Conventions
 

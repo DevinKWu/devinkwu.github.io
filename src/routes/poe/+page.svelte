@@ -93,7 +93,16 @@
   onMount(() => {
     try {
       const saved = localStorage.getItem('poe-history');
-      if (saved) history = JSON.parse(saved);
+      if (saved) {
+        history = JSON.parse(saved);
+        // 舊格式 migration：{ block1, block2, result } → { throws: [{b1, b2, res}] }
+        history = history.map(e =>
+          e.throws ? e : {
+            id: e.id, time: e.time, prayer: e.prayer,
+            throws: [{ b1: e.block1, b2: e.block2, res: e.result }],
+          }
+        );
+      }
     } catch {}
     const savedColor = localStorage.getItem('poe-color');
     if (savedColor && (poeColorPresets.some(c => c.id === savedColor) || savedColor === 'custom')) {
@@ -159,6 +168,26 @@
     }, {})
   );
 
+  function computeStats(throws) {
+    return throws.reduce((acc, t) => {
+      acc[t.res] = (acc[t.res] || 0) + 1;
+      return acc;
+    }, {});
+  }
+
+  function computeStreaks(throws) {
+    const segs = [];
+    let i = 0, idx = 1;
+    while (i < throws.length) {
+      const res = throws[i].res;
+      let count = 0;
+      while (i < throws.length && throws[i].res === res) { count++; i++; }
+      segs.push({ startIdx: idx, result: res, count });
+      idx += count;
+    }
+    return segs;
+  }
+
   // 連線紀錄：對當次批次擲杯做 run-length encoding
   const streaks = $derived(
     (() => {
@@ -202,14 +231,7 @@
       const now = Date.now();
       const time = new Date().toLocaleString('zh-TW', { hour12: false });
       history = [
-        ...newThrows.map((t, i) => ({
-          id: now + i,
-          time,
-          prayer: prayer.trim(),
-          block1: t.b1,
-          block2: t.b2,
-          result: t.res,
-        })),
+        { id: now, time, prayer: prayer.trim(), throws: newThrows },
         ...history,
       ].slice(0, 100);
     }, 1100);
@@ -701,28 +723,73 @@
       {:else}
         <ul class="space-y-2">
           {#each history as entry (entry.id)}
-            <li class="history-entry flex flex-col gap-1 px-4 py-3 rounded-lg bg-white border border-gray-100 border-l-2 history-entry-{entry.result} shadow-sm">
+            {@const isBatch = entry.throws.length > 1}
+            {@const batchStats = isBatch ? computeStats(entry.throws) : null}
+            {@const batchStreaks = isBatch ? computeStreaks(entry.throws) : null}
+            <li class="history-entry flex flex-col gap-1.5 px-4 py-3 rounded-lg bg-white border border-gray-100 border-l-2 history-entry-{entry.throws[0].res} shadow-sm">
+              <!-- header: time + throw count badge -->
               <div class="flex items-baseline gap-2 flex-wrap">
                 <span class="text-[0.7rem] text-gray-400 tabular-nums">{entry.time}</span>
-                {#if entry.prayer}
-                  <span class="text-[0.76rem] text-gray-500 italic overflow-hidden text-ellipsis whitespace-nowrap max-w-[240px]">「{entry.prayer}」</span>
+                {#if isBatch}
+                  <span class="text-[0.6rem] text-gray-400 border border-gray-200 rounded-full px-1.5"
+                        style="font-family:'Noto Serif TC',serif">{entry.throws.length}擲</span>
                 {/if}
               </div>
-              <div class="flex items-center gap-2">
-                <div class="flex items-center gap-1">
-                  <span class="mini-block {entry.block1 === 0 ? 'mini-yang' : entry.block1 === 1 ? 'mini-yin' : 'mini-li'}">
-                    {entry.block1 === 0 ? '陽' : entry.block1 === 1 ? '陰' : '立'}
-                  </span>
-                  <span class="text-gray-300 text-[0.7rem]">·</span>
-                  <span class="mini-block {entry.block2 === 0 ? 'mini-yang' : entry.block2 === 1 ? 'mini-yin' : 'mini-li'}">
-                    {entry.block2 === 0 ? '陽' : entry.block2 === 1 ? '陰' : '立'}
-                  </span>
+              <!-- 問題（可折疊） -->
+              {#if entry.prayer}
+                <details class="prayer-details">
+                  <summary style="font-family:'Noto Serif TC',serif">祈求內容</summary>
+                  <p class="prayer-body">{entry.prayer}</p>
+                </details>
+              {/if}
+
+              {#if !isBatch}
+                <!-- 單擲：mini-block pair + result -->
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
+                    <span class="mini-block {entry.throws[0].b1===0?'mini-yang':entry.throws[0].b1===1?'mini-yin':'mini-li'}">
+                      {entry.throws[0].b1===0?'陽':entry.throws[0].b1===1?'陰':'立'}
+                    </span>
+                    <span class="text-gray-300 text-[0.7rem]">·</span>
+                    <span class="mini-block {entry.throws[0].b2===0?'mini-yang':entry.throws[0].b2===1?'mini-yin':'mini-li'}">
+                      {entry.throws[0].b2===0?'陽':entry.throws[0].b2===1?'陰':'立'}
+                    </span>
+                  </div>
+                  <span class="text-gray-300 text-[0.72rem]">→</span>
+                  <span class="entry-result-{entry.throws[0].res} text-sm font-bold tracking-wide"
+                        style="font-family:'Noto Serif TC',serif">{resultMap[entry.throws[0].res].name}</span>
                 </div>
-                <span class="text-gray-300 text-[0.72rem]">→</span>
-                <span class="entry-result-{entry.result} text-sm font-bold tracking-wide" style="font-family:'Noto Serif TC',serif">
-                  {resultMap[entry.result].name}
-                </span>
-              </div>
+              {:else}
+                <!-- 批次：每擲小標籤（flex-wrap） -->
+                <div class="flex flex-wrap gap-1">
+                  {#each entry.throws as t, i}
+                    <span class="inline-flex items-center gap-0.5 text-[0.65rem] px-1.5 py-0.5 rounded bg-gray-50 border border-gray-100">
+                      <span class="text-gray-400" style="font-family:'Noto Serif TC',serif">第{i+1}擲</span>
+                      <span class="entry-result-{t.res} font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+                    </span>
+                  {/each}
+                </div>
+                <!-- 統計 -->
+                <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[0.65rem]">
+                  <span class="text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">統計</span>
+                  {#if batchStats.sheng}<span class="entry-result-sheng font-semibold">聖杯×{batchStats.sheng}</span>{/if}
+                  {#if batchStats.yin}<span class="entry-result-yin font-semibold">陰杯×{batchStats.yin}</span>{/if}
+                  {#if batchStats.xiao}<span class="entry-result-xiao font-semibold">笑杯×{batchStats.xiao}</span>{/if}
+                  {#if batchStats.li}<span class="entry-result-li font-semibold">立杯×{batchStats.li}！</span>{/if}
+                </div>
+                <!-- 連線 -->
+                <div class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.65rem]">
+                  <span class="text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">連線</span>
+                  {#each batchStreaks as streak, si}
+                    <span class="inline-flex items-center gap-0.5">
+                      <span class="text-gray-400" style="font-family:'Noto Serif TC',serif">第{streak.startIdx}擲</span>
+                      <span class="entry-result-{streak.result} font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[streak.result].name}</span>
+                      {#if streak.count > 1}<span class="text-gray-400">連續{streak.count}次</span>{/if}
+                    </span>
+                    {#if si < batchStreaks.length - 1}<span class="text-gray-300">›</span>{/if}
+                  {/each}
+                </div>
+              {/if}
             </li>
           {/each}
         </ul>
@@ -871,4 +938,36 @@
   .entry-result-sheng { color: #059669; }
   .entry-result-yin   { color: #6b7280; }
   .entry-result-xiao  { color: #d97706; }
+
+  /* ── 祈求折疊 ── */
+  .prayer-details summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: 0.68rem;
+    color: #9ca3af;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    user-select: none;
+    letter-spacing: 0.04em;
+  }
+  .prayer-details summary::-webkit-details-marker { display: none; }
+  .prayer-details summary::before {
+    content: '▸';
+    font-size: 0.55rem;
+    transition: transform 0.15s ease;
+    display: inline-block;
+  }
+  .prayer-details[open] summary::before { transform: rotate(90deg); }
+  .prayer-details[open] summary { color: #6b7280; }
+  .prayer-body {
+    margin-top: 0.35rem;
+    font-size: 0.76rem;
+    color: #374151;
+    line-height: 1.6;
+    padding-left: 0.75rem;
+    border-left: 2px solid #e5e7eb;
+    font-style: italic;
+    white-space: pre-wrap;
+  }
 </style>
