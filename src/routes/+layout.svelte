@@ -3,6 +3,10 @@
   import { siteConfig, navLinks } from '$lib/data/site.js';
   import GitHubIcon from '$lib/components/icons/GitHubIcon.svelte';
   import EmailIcon from '$lib/components/icons/EmailIcon.svelte';
+  import CloseIcon from '$lib/components/icons/CloseIcon.svelte';
+  import MenuIcon from '$lib/components/icons/MenuIcon.svelte';
+  import ChevronDownIcon from '$lib/components/icons/ChevronDownIcon.svelte';
+  import ChevronUpIcon from '$lib/components/icons/ChevronUpIcon.svelte';
 
   let { children } = $props();
   let mobileMenuOpen = $state(false);
@@ -64,13 +68,9 @@
         aria-label="Toggle menu"
       >
         {#if mobileMenuOpen}
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <CloseIcon />
         {:else}
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          <MenuIcon />
         {/if}
       </button>
     </div>
@@ -144,9 +144,7 @@
     class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-primary-600 text-white shadow-lg shadow-primary-500/40 hover:bg-primary-700 hover:shadow-primary-500/60 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-center"
     aria-label="前往頁尾"
   >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-    </svg>
+    <ChevronDownIcon class="w-5 h-5" />
   </button>
 {/if}
 
@@ -157,8 +155,6 @@
     class="fixed bottom-20 right-6 z-50 w-12 h-12 rounded-full bg-primary-600 text-white shadow-lg shadow-primary-500/40 hover:bg-primary-700 hover:shadow-primary-500/60 hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center"
     aria-label="回到頂部"
   >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
-    </svg>
+    <ChevronUpIcon class="w-5 h-5" />
   </button>
 {/if}

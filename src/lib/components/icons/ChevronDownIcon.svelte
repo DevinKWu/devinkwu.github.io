@@ -1,0 +1,7 @@
+<script>
+  let { class: className = 'w-6 h-6' } = $props();
+</script>
+
+<svg class={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+</svg>

@@ -6,6 +6,8 @@
   import GitHubIcon from '$lib/components/icons/GitHubIcon.svelte';
   import EmailIcon from '$lib/components/icons/EmailIcon.svelte';
   import LocationIcon from '$lib/components/icons/LocationIcon.svelte';
+  import ArrowRightIcon from '$lib/components/icons/ArrowRightIcon.svelte';
+  import ArrowDownIcon from '$lib/components/icons/ArrowDownIcon.svelte';
 
   let formName = $state('');
   let formEmail = $state('');
@@ -58,9 +60,7 @@
         class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-primary-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-primary-500/30 hover:bg-primary-700 hover:shadow-primary-500/40 transition-all duration-200"
       >
         查看作品集
-        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-        </svg>
+        <ArrowRightIcon class="ml-2 w-5 h-5" />
       </a>
       <a
         href="#contact"
@@ -73,9 +73,7 @@
 
   <!-- Scroll indicator -->
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-    </svg>
+    <ArrowDownIcon class="w-6 h-6 text-gray-400" />
   </div>
 </section>
 
