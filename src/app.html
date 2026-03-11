@@ -5,6 +5,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%
 	</head>
+	<script>
+		if (/Android/i.test(navigator.userAgent) && /Line/i.test(navigator.userAgent)) {
+			window.location.href = `intent://${window.location.host}${window.location.pathname}#Intent;scheme=http;package=com.android.chrome;end`;
+		}
+	</script>
 	<body data-sveltekit-prerender="true">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
