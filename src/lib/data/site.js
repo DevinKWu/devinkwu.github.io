@@ -21,7 +21,8 @@ export const navLinks = [
   { href: '/#skills', label: '技能' },
   { href: '/#projects', label: '作品集' },
   { href: '/#contact', label: '聯絡我' },
-  { href: '/poe', label: '擲杯' }
+  { href: '/poe', label: '擲杯' },
+  { href: '/shuffle', label: '隨機排序' }
 ];
 
 export const skills = [
