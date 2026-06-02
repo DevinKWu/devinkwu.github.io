@@ -24,12 +24,15 @@
   let history = $state([]);
   let historyOpen = $state(true);
 
+  let addFormOpen = $state(true); // 新增表單摺疊
+  let listOpen = $state(true);    // 選項清單摺疊
+
   let dataLoaded = false; // 非反應式守衛
 
   // 所有出現過的標籤（去重）
   const allTags = $derived([...new Set(options.flatMap(o => o.tags))]);
-  // 篩選函式：空 activeFilters = 全部；否則含任一已選標籤（OR）
-  const matchFilter = (o) => activeFilters.length === 0 || o.tags.some(t => activeFilters.includes(t));
+  // 篩選函式：空 activeFilters = 全部；否則需含全部已選標籤（AND）
+  const matchFilter = (o) => activeFilters.length === 0 || activeFilters.every(t => o.tags.includes(t));
   // 清單顯示用（僅顯示過濾，不影響排序）
   const filteredOptions = $derived(options.filter(matchFilter));
   // 排序對象 = 完整清單中標題非空者（不受篩選影響）
@@ -180,8 +183,17 @@
 
     <!-- 選項編輯區 -->
     <section class="w-full flex flex-col gap-4">
-      <h2 class="text-gray-500 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">選項清單</h2>
+      <!-- 新增表單（可摺疊） -->
+      <button
+        class="flex items-center gap-2 cursor-pointer"
+        onclick={() => addFormOpen = !addFormOpen}
+        aria-expanded={addFormOpen}
+      >
+        <h2 class="text-gray-500 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">新增選項</h2>
+        <span class="text-gray-400 text-[0.6rem] transition-transform duration-200 {addFormOpen ? 'rotate-180' : ''}" aria-hidden="true">▼</span>
+      </button>
 
+      {#if addFormOpen}
       <!-- 新增區 -->
       <div class="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-4">
         <input
@@ -210,29 +222,19 @@
           >新增</button>
         </div>
       </div>
-
-      <!-- 標籤篩選列 -->
-      {#if allTags.length > 0}
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">篩選標籤</span>
-          {#each allTags as tag}
-            <button
-              type="button"
-              onclick={() => toggleFilter(tag)}
-              class="text-xs rounded-full px-2.5 py-0.5 transition-colors cursor-pointer {activeFilters.includes(tag) ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
-            >{tag}</button>
-          {/each}
-          {#if activeFilters.length > 0}
-            <button
-              type="button"
-              onclick={clearFilters}
-              class="text-xs text-gray-400 hover:text-gray-600 underline cursor-pointer"
-            >清除篩選</button>
-          {/if}
-        </div>
       {/if}
 
-      <!-- 選項清單 -->
+      <!-- 選項清單（可摺疊） -->
+      <button
+        class="flex items-center gap-2 cursor-pointer"
+        onclick={() => listOpen = !listOpen}
+        aria-expanded={listOpen}
+      >
+        <h2 class="text-gray-500 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">選項清單{#if options.length > 0}<span class="text-gray-300 normal-case">（{options.length}）</span>{/if}</h2>
+        <span class="text-gray-400 text-[0.6rem] transition-transform duration-200 {listOpen ? 'rotate-180' : ''}" aria-hidden="true">▼</span>
+      </button>
+
+      {#if listOpen}
       {#if options.length === 0}
         <p class="text-center text-gray-400 text-sm py-6 tracking-wider" style="font-family:'Noto Serif TC',serif">尚無選項，請新增</p>
       {:else if filteredOptions.length === 0}
@@ -295,7 +297,29 @@
           {/each}
         </ul>
       {/if}
+      {/if}
     </section>
+
+    <!-- 標籤篩選列 -->
+    {#if allTags.length > 0}
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <span class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">篩選標籤</span>
+        {#each allTags as tag}
+          <button
+            type="button"
+            onclick={() => toggleFilter(tag)}
+            class="text-xs rounded-full px-2.5 py-0.5 transition-colors cursor-pointer {activeFilters.includes(tag) ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
+          >{tag}</button>
+        {/each}
+        {#if activeFilters.length > 0}
+          <button
+            type="button"
+            onclick={clearFilters}
+            class="text-xs text-gray-400 hover:text-gray-600 underline cursor-pointer"
+          >清除篩選</button>
+        {/if}
+      </div>
+    {/if}
 
     <!-- 開始按鈕 -->
     <div class="flex flex-col items-center gap-2">
