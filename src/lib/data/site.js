@@ -7,7 +7,7 @@ export const siteConfig = {
   title: 'Devin Wu - 個人網站',
   description: 'Devin Wu 的個人網站 - 網頁開發者',
   tagline: '打造優質的網頁體驗',
-  email: 'devink0430@gmail.com',
+  email: '',
   location: '台灣',
   github: {
     url: 'https://github.com/DevinKWu',
