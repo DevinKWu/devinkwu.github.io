@@ -4,6 +4,7 @@
   import { FORMAT_META, serialize, deserialize } from '$lib/data/shuffleIO.js';
   import CloseIcon from '$lib/components/icons/CloseIcon.svelte';
   import ShuffleHistoryEntry from '$lib/components/ShuffleHistoryEntry.svelte';
+  import TagInput from '$lib/components/TagInput.svelte';
 
   // 選項：{ id, title, note, tags, createdAt, updatedAt }
   let options = $state([]);
@@ -317,16 +318,17 @@
           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors"
         />
         <div class="flex gap-2">
-          <input
+          <TagInput
             bind:value={newTagsStr}
-            onkeydown={(e) => { if (e.key === 'Enter') addOption(); }}
+            suggestions={allTags}
             placeholder="標籤，以逗號分隔（選填）"
-            class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors"
+            onenter={addOption}
+            class="flex-1"
           />
           <button
             type="button"
             onclick={addOption}
-            class="shrink-0 bg-primary-600 hover:bg-primary-700 text-white rounded-full px-5 py-2 text-sm font-medium transition-colors cursor-pointer"
+            class="shrink-0 bg-primary-600 hover:bg-primary-700 text-white rounded-full px-5 py-2 text-sm font-medium transition-colors cursor-pointer self-start"
           >新增</button>
         </div>
       </div>
@@ -394,10 +396,10 @@
                     placeholder="備註（選填）"
                     class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors"
                   />
-                  <input
+                  <TagInput
                     bind:value={editTagsStr}
+                    suggestions={allTags}
                     placeholder="標籤，以逗號分隔（選填）"
-                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors"
                   />
                   <div class="flex gap-2">
                     <button type="button" onclick={commitEdit} class="bg-primary-600 hover:bg-primary-700 text-white rounded-full px-4 py-1.5 text-xs font-medium transition-colors cursor-pointer">儲存</button>
