@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { HISTORY_LIMIT, makeId, shuffle, parseTags, formatTime } from '$lib/data/shuffle.js';
+  import { FORMAT_META, serialize, deserialize } from '$lib/data/shuffleIO.js';
   import CloseIcon from '$lib/components/icons/CloseIcon.svelte';
   import ShuffleHistoryEntry from '$lib/components/ShuffleHistoryEntry.svelte';
 
@@ -26,6 +27,17 @@
 
   let addFormOpen = $state(true); // 新增表單摺疊
   let listOpen = $state(true);    // 選項清單摺疊
+
+  // 匯入/匯出
+  let ioFormat = $state('json');
+  let ioError = $state('');
+  let ioMsg = $state('');
+  let pendingImport = $state(null); // 待套用的匯入選項（等待取代/追加選擇）
+  let fileInputEl;
+  let msgTimer;
+
+  const acceptAttr = $derived('.' + FORMAT_META[ioFormat].ext);
+  const clipboardOk = $derived(FORMAT_META[ioFormat].clipboard);
 
   let dataLoaded = false; // 非反應式守衛
 
@@ -153,6 +165,102 @@
   function clearHistory() {
     history = [];
   }
+
+  // === 匯入/匯出 ===
+  function flashMsg(msg) {
+    ioError = '';
+    ioMsg = msg;
+    clearTimeout(msgTimer);
+    msgTimer = setTimeout(() => { ioMsg = ''; }, 2500);
+  }
+
+  async function exportFile() {
+    try {
+      const data = await serialize($state.snapshot(options), ioFormat);
+      const meta = FORMAT_META[ioFormat];
+      const blob = new Blob([data], { type: meta.mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `shuffle-options.${meta.ext}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      ioMsg = '';
+      ioError = '匯出失敗：' + (e?.message ?? e);
+    }
+  }
+
+  async function exportClipboard() {
+    try {
+      const text = await serialize($state.snapshot(options), ioFormat);
+      await navigator.clipboard.writeText(text);
+      flashMsg('已複製到剪貼簿');
+    } catch (e) {
+      ioMsg = '';
+      ioError = '複製失敗：' + (e?.message ?? e);
+    }
+  }
+
+  function triggerFileImport() {
+    fileInputEl?.click();
+  }
+
+  async function onFileChosen(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // 允許再次選同一檔案
+    if (!file) return;
+    try {
+      const parsed = ioFormat === 'xlsx'
+        ? await deserialize(new Uint8Array(await file.arrayBuffer()), 'xlsx')
+        : await deserialize(await file.text(), ioFormat);
+      stageImport(parsed);
+    } catch (err) {
+      ioMsg = '';
+      ioError = '匯入失敗：' + (err?.message ?? err);
+    }
+  }
+
+  async function importClipboard() {
+    try {
+      const text = await navigator.clipboard.readText();
+      stageImport(await deserialize(text, ioFormat));
+    } catch (err) {
+      ioMsg = '';
+      ioError = '貼上失敗：' + (err?.message ?? err);
+    }
+  }
+
+  function stageImport(parsed) {
+    if (!parsed || parsed.length === 0) {
+      ioMsg = '';
+      ioError = '沒有可匯入的選項';
+      return;
+    }
+    ioError = '';
+    ioMsg = '';
+    pendingImport = parsed;
+  }
+
+  function applyImport(mode) {
+    const imported = pendingImport ?? [];
+    if (mode === 'replace') {
+      options = imported;
+    } else {
+      const existingIds = new Set(options.map(o => o.id));
+      options = [...options, ...imported.filter(o => !existingIds.has(o.id))];
+    }
+    const n = imported.length;
+    pendingImport = null;
+    pruneFilters();
+    flashMsg(mode === 'replace' ? `已匯入 ${n} 個選項（取代）` : `已匯入 ${imported.length} 個選項（追加）`);
+  }
+
+  function cancelImport() {
+    pendingImport = null;
+  }
 </script>
 
 <svelte:head>
@@ -235,6 +343,36 @@
       </button>
 
       {#if listOpen}
+      <!-- 匯入/匯出工具列 -->
+      <div class="flex flex-col gap-2 rounded-lg border border-gray-200 bg-gray-50/60 p-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <label for="io-format" class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">格式</label>
+          <select
+            id="io-format"
+            bind:value={ioFormat}
+            class="rounded-lg border border-gray-300 px-2 py-1 text-xs text-gray-700 bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors cursor-pointer"
+          >
+            {#each Object.entries(FORMAT_META) as [key, meta]}
+              <option value={key}>{meta.label}</option>
+            {/each}
+          </select>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-gray-400 tracking-wider self-center" style="font-family:'Noto Serif TC',serif">匯出</span>
+          <button type="button" onclick={exportFile} class="text-xs border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:border-primary-300 hover:text-primary-600 transition-colors bg-white cursor-pointer">下載檔案</button>
+          <button type="button" onclick={exportClipboard} disabled={!clipboardOk} class="text-xs border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:border-primary-300 hover:text-primary-600 transition-colors bg-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-600">複製</button>
+          <span class="text-xs text-gray-400 tracking-wider self-center ml-1" style="font-family:'Noto Serif TC',serif">匯入</span>
+          <button type="button" onclick={triggerFileImport} class="text-xs border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:border-primary-300 hover:text-primary-600 transition-colors bg-white cursor-pointer">讀取檔案</button>
+          <button type="button" onclick={importClipboard} disabled={!clipboardOk} class="text-xs border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:border-primary-300 hover:text-primary-600 transition-colors bg-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-600">貼上</button>
+        </div>
+        {#if !clipboardOk}
+          <p class="text-[0.65rem] text-gray-400">XLSX 為二進位格式，僅支援檔案匯入/匯出</p>
+        {/if}
+        {#if ioError}<p class="text-xs text-red-500">{ioError}</p>{/if}
+        {#if ioMsg}<p class="text-xs text-green-600">{ioMsg}</p>{/if}
+        <input type="file" bind:this={fileInputEl} onchange={onFileChosen} accept={acceptAttr} class="hidden" />
+      </div>
+
       {#if options.length === 0}
         <p class="text-center text-gray-400 text-sm py-6 tracking-wider" style="font-family:'Noto Serif TC',serif">尚無選項，請新增</p>
       {:else if filteredOptions.length === 0}
@@ -407,6 +545,21 @@
 
   </div>
 </div>
+
+<!-- 匯入模式選擇（取代／追加） -->
+{#if pendingImport}
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4">
+      <h3 class="text-base font-bold text-gray-900" style="font-family:'Noto Serif TC',serif">匯入 {pendingImport.length} 個選項</h3>
+      <p class="text-sm text-gray-500">目前清單有 {options.length} 個選項，要如何處理？</p>
+      <div class="flex flex-col gap-2">
+        <button type="button" onclick={() => applyImport('replace')} class="bg-primary-600 hover:bg-primary-700 text-white rounded-full px-4 py-2 text-sm font-medium transition-colors cursor-pointer">取代現有清單</button>
+        <button type="button" onclick={() => applyImport('append')} class="border border-primary-300 text-primary-700 hover:bg-primary-50 rounded-full px-4 py-2 text-sm font-medium transition-colors cursor-pointer">追加合併（略過重複 id）</button>
+        <button type="button" onclick={cancelImport} class="text-gray-400 hover:text-gray-600 rounded-full px-4 py-2 text-sm transition-colors cursor-pointer">取消</button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   .shuffle-btn::before {
