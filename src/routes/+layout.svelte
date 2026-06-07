@@ -7,6 +7,7 @@
   import MenuIcon from '$lib/components/icons/MenuIcon.svelte';
   import ChevronDownIcon from '$lib/components/icons/ChevronDownIcon.svelte';
   import ChevronUpIcon from '$lib/components/icons/ChevronUpIcon.svelte';
+  import UpdatePrompt from '$lib/components/UpdatePrompt.svelte';
 
   let { children } = $props();
   let mobileMenuOpen = $state(false);
@@ -147,6 +148,8 @@
     <ChevronDownIcon class="w-5 h-5" />
   </button>
 {/if}
+
+<UpdatePrompt />
 
 <!-- Scroll to Top Button -->
 {#if showScrollTop}
