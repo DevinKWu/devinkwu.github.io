@@ -1,14 +1,19 @@
 <script>
   import { onMount } from 'svelte';
 
-  let visible = $state(false);
+  let showUpdate = $state(false);
+  let showOfflineReady = $state(false);
   let updateSW = $state(null);
 
   onMount(async () => {
     const { registerSW } = await import('virtual:pwa-register');
     updateSW = registerSW({
       onNeedRefresh() {
-        visible = true;
+        showUpdate = true;
+      },
+      onOfflineReady() {
+        showOfflineReady = true;
+        setTimeout(() => { showOfflineReady = false; }, 3000);
       }
     });
   });
@@ -17,12 +22,21 @@
     updateSW?.(true);
   }
 
-  function dismiss() {
-    visible = false;
+  function dismissUpdate() {
+    showUpdate = false;
   }
 </script>
 
-{#if visible}
+{#if showOfflineReady}
+  <div
+    role="status"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl shadow-xl px-4 py-3 text-sm whitespace-nowrap"
+  >
+    <span class="text-green-700 font-medium">已可離線使用</span>
+  </div>
+{/if}
+
+{#if showUpdate}
   <div
     role="alert"
     class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 bg-white border border-gray-200 rounded-xl shadow-xl px-4 py-3 text-sm whitespace-nowrap"
@@ -35,7 +49,7 @@
       立即更新
     </button>
     <button
-      onclick={dismiss}
+      onclick={dismissUpdate}
       class="px-3 py-1.5 text-gray-400 hover:text-gray-600 transition-colors text-xs"
     >
       稍後

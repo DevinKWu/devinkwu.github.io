@@ -12,7 +12,6 @@
     "@sveltejs/kit": "^2.16.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "@tailwindcss/vite": "^4.1.18",
-    "@vite-pwa/assets-generator": "^1.0.2",
     "svelte": "^5.0.0",
     "tailwindcss": "^4.1.18",
     "vite": "^6.0.0",
