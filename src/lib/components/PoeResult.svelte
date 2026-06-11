@@ -4,10 +4,10 @@
 
 <div class="w-full rounded-2xl border bg-white shadow-sm {resultInfo.colorClass}">
   <div class="p-7 text-center">
-    <div class="result-name text-5xl font-bold tracking-wide leading-none mb-1.5" style="font-family:'Noto Serif TC',serif">
+    <div class="font-serif result-name text-5xl font-bold tracking-wide leading-none mb-1.5">
       {resultInfo.name}
     </div>
-    <div class="result-subtitle text-sm tracking-wider mb-4" style="font-family:'Noto Serif TC',serif">
+    <div class="font-serif result-subtitle text-sm tracking-wider mb-4">
       {resultInfo.subtitle}
     </div>
     <p class="text-gray-600 text-sm leading-relaxed mb-3">{resultInfo.message}</p>

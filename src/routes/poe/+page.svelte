@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import {
-    DETAIL_LIMIT, poeColorPresets, resultMap,
+    DETAIL_LIMIT, HISTORY_LIMIT, poeColorPresets, resultMap,
     makeColorFromHex, computeStats, computeStreaks,
   } from '$lib/data/poe.js';
   import PoeBlock        from '$lib/components/PoeBlock.svelte';
@@ -40,12 +40,7 @@
     currentThrows.length === 1 ? resultMap[currentThrows[0].res] : null
   );
 
-  const throwStats = $derived(
-    currentThrows.reduce((acc, t) => {
-      acc[t.res] = (acc[t.res] || 0) + 1;
-      return acc;
-    }, {})
-  );
+  const throwStats = $derived(computeStats(currentThrows));
 
   const streaks = $derived(computeStreaks(currentThrows));
 
@@ -91,6 +86,8 @@
 
   function throwPoe() {
     if (isAnimating) return;
+    // number input 的 min/max 擋不住手動輸入：清空（null）、0、超出範圍都要 clamp
+    throwCount = Math.min(10000, Math.max(1, Math.floor(Number(throwCount) || 1)));
     hasThrown = true;
     isAnimating = true;
     block1 = null;
@@ -126,7 +123,7 @@
           throws: newThrows.length <= DETAIL_LIMIT ? newThrows : null,
         },
         ...history,
-      ].slice(0, 100);
+      ].slice(0, HISTORY_LIMIT);
     }, 1100);
   }
 </script>
@@ -187,11 +184,11 @@
           <span class="text-gray-400 text-xs">◆</span>
           <span class="block w-11 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
         </div>
-        <h1 class="text-5xl font-bold text-gray-900 tracking-wide" style="font-family:'Noto Serif TC',serif">擲杯</h1>
-        <p class="text-gray-500 text-sm mt-1.5 tracking-widest" style="font-family:'Noto Serif TC',serif">傳統台灣廟宇問卜儀式</p>
+        <h1 class="font-serif text-5xl font-bold text-gray-900 tracking-wide">擲杯</h1>
+        <p class="font-serif text-gray-500 text-sm mt-1.5 tracking-widest">傳統台灣廟宇問卜儀式</p>
         <div class="flex items-center gap-3 justify-center mt-3">
           <span class="block w-11 h-px bg-gradient-to-r from-transparent to-gray-300"></span>
-          <span class="text-gray-400 text-[0.7rem] tracking-widest" style="font-family:'Noto Serif TC',serif">誠心問卜・神明指引</span>
+          <span class="font-serif text-gray-400 text-[0.7rem] tracking-widest">誠心問卜・神明指引</span>
           <span class="block w-11 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
         </div>
       </div>
@@ -202,7 +199,7 @@
 
     <!-- 祈求欄 -->
     <div class="w-full flex flex-col gap-2">
-      <label class="text-center text-gray-500 text-xs tracking-widest" style="font-family:'Noto Serif TC',serif" for="prayer-input">
+      <label class="font-serif text-center text-gray-500 text-xs tracking-widest" for="prayer-input">
         心中默念您的祈求（選填）
       </label>
       <textarea
@@ -226,7 +223,7 @@
 
     <!-- 擲杯次數 -->
     <div class="flex items-center gap-2">
-      <label class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif"
+      <label class="font-serif text-xs text-gray-400 tracking-wider"
              for="throw-count">一次擲</label>
       <input
         id="throw-count"
@@ -237,13 +234,12 @@
                focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none
                transition-colors bg-white"
       />
-      <span class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">次</span>
+      <span class="font-serif text-xs text-gray-400 tracking-wider">次</span>
     </div>
 
     <!-- 擲杯按鈕 -->
     <button
-      class="throw-btn relative overflow-hidden rounded-full px-14 py-3.5 text-lg font-bold tracking-widest text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-65 disabled:cursor-default transition-all duration-200 shadow-lg shadow-primary-500/30 flex items-center gap-2"
-      style="font-family:'Noto Serif TC',serif"
+      class="font-serif throw-btn relative overflow-hidden rounded-full px-14 py-3.5 text-lg font-bold tracking-widest text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-65 disabled:cursor-default transition-all duration-200 shadow-lg shadow-primary-500/30 flex items-center gap-2"
       onclick={throwPoe}
       disabled={isAnimating}
     >
@@ -259,13 +255,13 @@
 
     <!-- 結果顯示 -->
     {#if currentThrows.length > 0 && !isAnimating}
-      {#if throwCount === 1}
+      {#if currentThrows.length === 1}
         <PoeResult {resultInfo} />
       {:else}
         <PoeThrowList throws={currentThrows} {throwStats} {streaks} />
       {/if}
     {:else if !hasThrown}
-      <p class="text-gray-400 text-sm tracking-widest" style="font-family:'Noto Serif TC',serif">誠心默念，點擊擲杯</p>
+      <p class="font-serif text-gray-400 text-sm tracking-widest">誠心默念，點擊擲杯</p>
     {/if}
 
     <!-- 歷史紀錄 -->
@@ -276,7 +272,7 @@
           onclick={() => historyOpen = !historyOpen}
           aria-expanded={historyOpen}
         >
-          <h2 class="flex items-center gap-3 text-gray-400 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">
+          <h2 class="font-serif flex items-center gap-3 text-gray-400 text-xs tracking-widest uppercase">
             <span class="block w-11 h-px bg-gradient-to-r from-transparent to-gray-300"></span>
             擲杯紀錄{#if history.length > 0}<span class="text-gray-300 font-normal">（{history.length}）</span>{/if}
             <span class="block w-11 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
@@ -293,7 +289,7 @@
 
       {#if historyOpen}
         {#if history.length === 0}
-          <p class="text-center text-gray-400 text-sm py-6 tracking-wider" style="font-family:'Noto Serif TC',serif">尚無擲杯紀錄</p>
+          <p class="font-serif text-center text-gray-400 text-sm py-6 tracking-wider">尚無擲杯紀錄</p>
         {:else}
           <ul class="space-y-2">
             {#each history as entry (entry.id)}
