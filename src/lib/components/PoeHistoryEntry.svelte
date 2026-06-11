@@ -13,13 +13,12 @@
     <summary class="flex items-center gap-2 flex-wrap px-4 py-3 cursor-pointer select-none list-none">
       <span class="text-[0.7rem] text-gray-400 tabular-nums">{entry.time}</span>
       {#if isBatch}
-        <span class="text-[0.6rem] text-gray-400 border border-gray-200 rounded-full px-1.5"
-              style="font-family:'Noto Serif TC',serif">{entry.throwCount}擲</span>
+        <span class="font-serif text-[0.6rem] text-gray-400 border border-gray-200 rounded-full px-1.5">{entry.throwCount}擲</span>
       {/if}
       <span class="ml-auto flex items-center gap-1.5">
         {#if !isBatch && entry.throws}
           {@const t = entry.throws[0]}
-          <span class="entry-result-{t.res} text-xs font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+          <span class="font-serif entry-result-{t.res} text-xs font-bold">{resultMap[t.res].name}</span>
         {:else if isBatch}
           <span class="text-[0.65rem] text-gray-400">
             {[
@@ -38,7 +37,7 @@
     <div class="px-4 pb-3 flex flex-col gap-1.5 border-t border-gray-100 pt-2">
       {#if entry.prayer}
         <details class="prayer-details">
-          <summary style="font-family:'Noto Serif TC',serif">祈求內容</summary>
+          <summary class="font-serif">祈求內容</summary>
           <p class="prayer-body">{entry.prayer}</p>
         </details>
       {/if}
@@ -56,33 +55,32 @@
             </span>
           </div>
           <span class="text-gray-300 text-[0.72rem]">→</span>
-          <span class="entry-result-{t.res} text-sm font-bold tracking-wide"
-                style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+          <span class="font-serif entry-result-{t.res} text-sm font-bold tracking-wide">{resultMap[t.res].name}</span>
         </div>
       {:else}
         {#if entry.throws}
           <div class="flex flex-wrap gap-1">
             {#each entry.throws as t, i}
               <span class="inline-flex items-center gap-0.5 text-[0.65rem] px-1.5 py-0.5 rounded bg-gray-50 border border-gray-100">
-                <span class="text-gray-400" style="font-family:'Noto Serif TC',serif">第{i+1}擲</span>
-                <span class="entry-result-{t.res} font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+                <span class="font-serif text-gray-400">第{i+1}擲</span>
+                <span class="font-serif entry-result-{t.res} font-bold">{resultMap[t.res].name}</span>
               </span>
             {/each}
           </div>
         {/if}
         <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[0.65rem]">
-          <span class="text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">統計</span>
+          <span class="font-serif text-gray-400 tracking-wider">統計</span>
           {#if entry.stats.sheng}<span class="entry-result-sheng font-semibold">聖杯×{entry.stats.sheng}</span>{/if}
           {#if entry.stats.yin}<span class="entry-result-yin font-semibold">陰杯×{entry.stats.yin}</span>{/if}
           {#if entry.stats.xiao}<span class="entry-result-xiao font-semibold">笑杯×{entry.stats.xiao}</span>{/if}
           {#if entry.stats.li}<span class="entry-result-li font-semibold">立杯×{entry.stats.li}！</span>{/if}
         </div>
         <div class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.65rem]">
-          <span class="text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">連線</span>
+          <span class="font-serif text-gray-400 tracking-wider">連線</span>
           {#each entry.streaks as streak, si}
             <span class="inline-flex items-center gap-0.5">
-              <span class="text-gray-400" style="font-family:'Noto Serif TC',serif">第{streak.startIdx}擲</span>
-              <span class="entry-result-{streak.result} font-bold" style="font-family:'Noto Serif TC',serif">{resultMap[streak.result].name}</span>
+              <span class="font-serif text-gray-400">第{streak.startIdx}擲</span>
+              <span class="font-serif entry-result-{streak.result} font-bold">{resultMap[streak.result].name}</span>
               {#if streak.count > 1}<span class="text-gray-400">連續{streak.count}次</span>{/if}
             </span>
             {#if si < entry.streaks.length - 1}<span class="text-gray-300">›</span>{/if}

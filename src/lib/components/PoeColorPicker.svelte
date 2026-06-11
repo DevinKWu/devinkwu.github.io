@@ -5,7 +5,7 @@
 </script>
 
 <div class="flex items-center justify-center gap-3">
-  <span class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">筊杯顏色</span>
+  <span class="font-serif text-xs text-gray-400 tracking-wider">筊杯顏色</span>
   {#each poeColorPresets as preset}
     <button
       class="w-7 h-7 rounded-full border-2 transition-all duration-150 hover:scale-110

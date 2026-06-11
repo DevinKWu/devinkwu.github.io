@@ -1,6 +1,9 @@
 // N 超過此值時不渲染逐筆清單（避免大量 DOM 節點卡頓）
 export const DETAIL_LIMIT = 50;
 
+// 歷史紀錄保留筆數上限
+export const HISTORY_LIMIT = 100;
+
 // 筊杯顏色預設（三個固定 + 一個自訂）
 export const poeColorPresets = [
   { id: 'red',       name: '正紅', swatch: '#C82020',

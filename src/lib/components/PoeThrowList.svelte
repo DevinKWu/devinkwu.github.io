@@ -9,8 +9,7 @@
     <ul class="divide-y divide-gray-100">
       {#each throws as t, i}
         <li class="flex items-center gap-3 px-4 py-2.5">
-          <span class="text-[0.7rem] text-gray-400 w-10 shrink-0"
-                style="font-family:'Noto Serif TC',serif">第{i+1}擲</span>
+          <span class="font-serif text-[0.7rem] text-gray-400 w-10 shrink-0">第{i+1}擲</span>
           <span class="mini-block {t.b1===0?'mini-yang':t.b1===1?'mini-yin':'mini-li'}">
             {t.b1===0?'陽':t.b1===1?'陰':'立'}
           </span>
@@ -19,21 +18,18 @@
             {t.b2===0?'陽':t.b2===1?'陰':'立'}
           </span>
           <span class="text-gray-300 text-[0.72rem]">→</span>
-          <span class="text-sm font-bold tracking-wide entry-result-{t.res}"
-                style="font-family:'Noto Serif TC',serif">{resultMap[t.res].name}</span>
+          <span class="font-serif text-sm font-bold tracking-wide entry-result-{t.res}">{resultMap[t.res].name}</span>
         </li>
       {/each}
     </ul>
   {:else}
-    <div class="px-4 py-3 text-[0.72rem] text-gray-400 border-b border-gray-100"
-         style="font-family:'Noto Serif TC',serif">
+    <div class="font-serif px-4 py-3 text-[0.72rem] text-gray-400 border-b border-gray-100">
       共 {throws.length} 擲，顯示統計與連線摘要
     </div>
   {/if}
 
   <div class="flex flex-wrap gap-x-4 gap-y-1 px-4 py-2.5 bg-gray-50 border-t border-gray-100">
-    <span class="text-[0.7rem] text-gray-400 tracking-wider mr-1"
-          style="font-family:'Noto Serif TC',serif">統計</span>
+    <span class="font-serif text-[0.7rem] text-gray-400 tracking-wider mr-1">統計</span>
     {#if throwStats.sheng}
       <span class="text-[0.72rem] entry-result-sheng font-semibold">聖杯 ×{throwStats.sheng}</span>
     {/if}
@@ -49,15 +45,12 @@
   </div>
 
   <div class="px-4 py-2.5 border-t border-gray-100">
-    <div class="text-[0.7rem] text-gray-400 tracking-widest mb-1.5"
-         style="font-family:'Noto Serif TC',serif">連線紀錄</div>
+    <div class="font-serif text-[0.7rem] text-gray-400 tracking-widest mb-1.5">連線紀錄</div>
     <div class="flex flex-col gap-0.5">
       {#each streaks as streak}
         <div class="flex items-center gap-2 text-xs">
-          <span class="text-gray-400 tabular-nums shrink-0 w-[4rem]"
-                style="font-family:'Noto Serif TC',serif">第{streak.startIdx}擲</span>
-          <span class="entry-result-{streak.result} font-bold tracking-wide"
-                style="font-family:'Noto Serif TC',serif">{resultMap[streak.result].name}</span>
+          <span class="font-serif text-gray-400 tabular-nums shrink-0 w-[4rem]">第{streak.startIdx}擲</span>
+          <span class="font-serif entry-result-{streak.result} font-bold tracking-wide">{resultMap[streak.result].name}</span>
           {#if streak.count > 1}
             <span class="text-gray-400 text-[0.65rem]">連續 {streak.count} 次</span>
           {/if}

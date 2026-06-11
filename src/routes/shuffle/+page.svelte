@@ -280,11 +280,11 @@
           <span class="text-gray-400 text-xs">◆</span>
           <span class="block w-11 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
         </div>
-        <h1 class="text-5xl font-bold text-gray-900 tracking-wide" style="font-family:'Noto Serif TC',serif">隨機排序</h1>
-        <p class="text-gray-500 text-sm mt-1.5 tracking-widest" style="font-family:'Noto Serif TC',serif">輸入選項，隨機排出順序</p>
+        <h1 class="font-serif text-5xl font-bold text-gray-900 tracking-wide">隨機排序</h1>
+        <p class="font-serif text-gray-500 text-sm mt-1.5 tracking-widest">輸入選項，隨機排出順序</p>
         <div class="flex items-center gap-3 justify-center mt-3">
           <span class="block w-11 h-px bg-gradient-to-r from-transparent to-gray-300"></span>
-          <span class="text-gray-400 text-[0.7rem] tracking-widest" style="font-family:'Noto Serif TC',serif">自動保存・歷史紀錄</span>
+          <span class="font-serif text-gray-400 text-[0.7rem] tracking-widest">自動保存・歷史紀錄</span>
           <span class="block w-11 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
         </div>
       </div>
@@ -298,7 +298,7 @@
         onclick={() => addFormOpen = !addFormOpen}
         aria-expanded={addFormOpen}
       >
-        <h2 class="text-gray-500 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">新增選項</h2>
+        <h2 class="font-serif text-gray-500 text-xs tracking-widest uppercase">新增選項</h2>
         <span class="text-gray-400 text-[0.6rem] transition-transform duration-200 {addFormOpen ? 'rotate-180' : ''}" aria-hidden="true">▼</span>
       </button>
 
@@ -340,7 +340,7 @@
         onclick={() => listOpen = !listOpen}
         aria-expanded={listOpen}
       >
-        <h2 class="text-gray-500 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">選項清單{#if options.length > 0}<span class="text-gray-300 normal-case">（{options.length}）</span>{/if}</h2>
+        <h2 class="font-serif text-gray-500 text-xs tracking-widest uppercase">選項清單{#if options.length > 0}<span class="text-gray-300 normal-case">（{options.length}）</span>{/if}</h2>
         <span class="text-gray-400 text-[0.6rem] transition-transform duration-200 {listOpen ? 'rotate-180' : ''}" aria-hidden="true">▼</span>
       </button>
 
@@ -348,7 +348,7 @@
       <!-- 匯入/匯出工具列 -->
       <div class="flex flex-col gap-2 rounded-lg border border-gray-200 bg-gray-50/60 p-3">
         <div class="flex flex-wrap items-center gap-2">
-          <label for="io-format" class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">格式</label>
+          <label for="io-format" class="font-serif text-xs text-gray-400 tracking-wider">格式</label>
           <select
             id="io-format"
             bind:value={ioFormat}
@@ -360,10 +360,10 @@
           </select>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <span class="text-xs text-gray-400 tracking-wider self-center" style="font-family:'Noto Serif TC',serif">匯出</span>
+          <span class="font-serif text-xs text-gray-400 tracking-wider self-center">匯出</span>
           <button type="button" onclick={exportFile} class="text-xs border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:border-primary-300 hover:text-primary-600 transition-colors bg-white cursor-pointer">下載檔案</button>
           <button type="button" onclick={exportClipboard} disabled={!clipboardOk} class="text-xs border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:border-primary-300 hover:text-primary-600 transition-colors bg-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-600">複製</button>
-          <span class="text-xs text-gray-400 tracking-wider self-center ml-1" style="font-family:'Noto Serif TC',serif">匯入</span>
+          <span class="font-serif text-xs text-gray-400 tracking-wider self-center ml-1">匯入</span>
           <button type="button" onclick={triggerFileImport} class="text-xs border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:border-primary-300 hover:text-primary-600 transition-colors bg-white cursor-pointer">讀取檔案</button>
           <button type="button" onclick={importClipboard} disabled={!clipboardOk} class="text-xs border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:border-primary-300 hover:text-primary-600 transition-colors bg-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-gray-600">貼上</button>
         </div>
@@ -376,9 +376,9 @@
       </div>
 
       {#if options.length === 0}
-        <p class="text-center text-gray-400 text-sm py-6 tracking-wider" style="font-family:'Noto Serif TC',serif">尚無選項，請新增</p>
+        <p class="font-serif text-center text-gray-400 text-sm py-6 tracking-wider">尚無選項，請新增</p>
       {:else if filteredOptions.length === 0}
-        <p class="text-center text-gray-400 text-sm py-6 tracking-wider" style="font-family:'Noto Serif TC',serif">沒有符合篩選的選項</p>
+        <p class="font-serif text-center text-gray-400 text-sm py-6 tracking-wider">沒有符合篩選的選項</p>
       {:else}
         <ul class="flex flex-col gap-2">
           {#each filteredOptions as option (option.id)}
@@ -443,7 +443,7 @@
     <!-- 標籤篩選列 -->
     {#if allTags.length > 0}
       <div class="flex flex-wrap items-center justify-center gap-2">
-        <span class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">篩選標籤</span>
+        <span class="font-serif text-xs text-gray-400 tracking-wider">篩選標籤</span>
         {#each allTags as tag}
           <button
             type="button"
@@ -464,24 +464,23 @@
     <!-- 開始按鈕 -->
     <div class="flex flex-col items-center gap-2">
       <button
-        class="shuffle-btn relative overflow-hidden rounded-full px-14 py-3.5 text-lg font-bold tracking-widest text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-65 disabled:cursor-default transition-all duration-200 shadow-lg shadow-primary-500/30"
-        style="font-family:'Noto Serif TC',serif"
+        class="font-serif shuffle-btn relative overflow-hidden rounded-full px-14 py-3.5 text-lg font-bold tracking-widest text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-65 disabled:cursor-default transition-all duration-200 shadow-lg shadow-primary-500/30"
         onclick={start}
         disabled={!canStart}
       >開始</button>
       {#if !canStart}
-        <p class="text-xs text-gray-400 tracking-wider" style="font-family:'Noto Serif TC',serif">至少需要兩個選項</p>
+        <p class="font-serif text-xs text-gray-400 tracking-wider">至少需要兩個選項</p>
       {/if}
     </div>
 
     <!-- 排序結果 -->
     {#if currentResult.length > 0}
       <section class="w-full rounded-xl border border-gray-200 bg-white p-5">
-        <h2 class="text-gray-500 text-xs tracking-widest uppercase mb-3" style="font-family:'Noto Serif TC',serif">
+        <h2 class="font-serif text-gray-500 text-xs tracking-widest uppercase mb-3">
           排序結果{#if activeFilters.length > 0}<span class="text-gray-300 normal-case tracking-normal">（已篩選）</span>{/if}
         </h2>
         {#if filteredResult.length === 0}
-          <p class="text-center text-gray-400 text-sm py-4 tracking-wider" style="font-family:'Noto Serif TC',serif">沒有符合篩選的結果</p>
+          <p class="font-serif text-center text-gray-400 text-sm py-4 tracking-wider">沒有符合篩選的結果</p>
         {:else}
           <ol class="flex flex-col gap-2">
             {#each filteredResult as item, i}
@@ -506,7 +505,7 @@
         {/if}
       </section>
     {:else if !hasShuffled}
-      <p class="text-center text-gray-400 text-sm tracking-widest" style="font-family:'Noto Serif TC',serif">新增選項後，點擊開始</p>
+      <p class="font-serif text-center text-gray-400 text-sm tracking-widest">新增選項後，點擊開始</p>
     {/if}
 
     <!-- 歷史紀錄 -->
@@ -517,7 +516,7 @@
           onclick={() => historyOpen = !historyOpen}
           aria-expanded={historyOpen}
         >
-          <h2 class="flex items-center gap-3 text-gray-400 text-xs tracking-widest uppercase" style="font-family:'Noto Serif TC',serif">
+          <h2 class="font-serif flex items-center gap-3 text-gray-400 text-xs tracking-widest uppercase">
             <span class="block w-11 h-px bg-gradient-to-r from-transparent to-gray-300"></span>
             歷史紀錄{#if history.length > 0}<span class="text-gray-300 font-normal">（{history.length}）</span>{/if}
             <span class="block w-11 h-px bg-gradient-to-l from-transparent to-gray-300"></span>
@@ -534,7 +533,7 @@
 
       {#if historyOpen}
         {#if history.length === 0}
-          <p class="text-center text-gray-400 text-sm py-6 tracking-wider" style="font-family:'Noto Serif TC',serif">尚無歷史紀錄</p>
+          <p class="font-serif text-center text-gray-400 text-sm py-6 tracking-wider">尚無歷史紀錄</p>
         {:else}
           <ul class="space-y-2">
             {#each history as entry (entry.id)}
@@ -552,7 +551,7 @@
 {#if pendingImport}
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4">
-      <h3 class="text-base font-bold text-gray-900" style="font-family:'Noto Serif TC',serif">匯入 {pendingImport.length} 個選項</h3>
+      <h3 class="font-serif text-base font-bold text-gray-900">匯入 {pendingImport.length} 個選項</h3>
       <p class="text-sm text-gray-500">目前清單有 {options.length} 個選項，要如何處理？</p>
       <div class="flex flex-col gap-2">
         <button type="button" onclick={() => applyImport('replace')} class="bg-primary-600 hover:bg-primary-700 text-white rounded-full px-4 py-2 text-sm font-medium transition-colors cursor-pointer">取代現有清單</button>

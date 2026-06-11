@@ -9,8 +9,7 @@
     <!-- 摘要列（時間 + 項數 + 刪除） -->
     <summary class="flex items-center gap-2 flex-wrap px-4 py-3 cursor-pointer select-none list-none">
       <span class="text-[0.7rem] text-gray-400 tabular-nums">{entry.time}</span>
-      <span class="text-[0.6rem] text-gray-400 border border-gray-200 rounded-full px-1.5"
-            style="font-family:'Noto Serif TC',serif">{entry.count}項</span>
+      <span class="font-serif text-[0.6rem] text-gray-400 border border-gray-200 rounded-full px-1.5">{entry.count}項</span>
       <span class="ml-auto flex items-center gap-1.5">
         <button
           type="button"
