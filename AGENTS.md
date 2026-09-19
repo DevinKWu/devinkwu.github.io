@@ -82,6 +82,15 @@ npm run build
 - 可重用 UI 應維持元件化。
 - SVG 圖示維持為獨立 Svelte 元件，樣式優先由使用處透過 `class` 控制。
 
+## Rust / WASM shuffle
+
+- `/shuffle` 的隨機排序與標籤解析核心由 `DevinKWu/rust-shuffle` 提供。
+- 瀏覽器版 WASM 產物 vendored 於 `src/lib/wasm/rust-shuffle/`。
+- 目前 vendored 版本為 `v0.1.0`；來源與 commit 記錄在該目錄的 `SOURCE.md`。
+- `rust_shuffle.js`、型別檔與 `rust_shuffle_bg.wasm` 是產生檔，不要手動修改。
+- 升級時應從新的 tagged rust-shuffle release 一次替換整組產物。
+- PWA precache 必須包含 `.wasm`，避免離線模式下 `/shuffle` 無法初始化。
+
 ## Scope Discipline
 
 - 修改前先閱讀相關檔案、直接依賴與必要設定。

@@ -45,14 +45,14 @@ function toRow(o) {
 }
 
 // 正規化任意來源記錄 → 內部選項；title 空則回傳 null（略過）
-function normalizeRecord(raw) {
+async function normalizeRecord(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const title = String(raw.title ?? raw.Title ?? '').trim();
   if (title === '') return null;
   const note = String(raw.note ?? raw.Note ?? '').trim();
   let tags;
   if (Array.isArray(raw.tags)) tags = raw.tags.map(t => String(t).trim()).filter(Boolean);
-  else tags = parseTags(String(raw.tags ?? raw.Tags ?? ''));
+  else tags = await parseTags(String(raw.tags ?? raw.Tags ?? ''));
   tags = [...new Set(tags)];
   const createdAt = toTs(raw.createdAt) ?? Date.now();
   const updatedAt = toTs(raw.updatedAt) ?? createdAt;
@@ -62,12 +62,12 @@ function normalizeRecord(raw) {
 }
 
 // 正規化陣列；檔案內 id 重複時補新 id
-function normalizeList(arr) {
+async function normalizeList(arr) {
   if (!Array.isArray(arr)) return [];
   const seen = new Set();
   const out = [];
   for (const raw of arr) {
-    const o = normalizeRecord(raw);
+    const o = await normalizeRecord(raw);
     if (!o) continue;
     if (seen.has(o.id)) o.id = makeId();
     seen.add(o.id);
@@ -108,22 +108,22 @@ export async function serialize(options, format) {
 export async function deserialize(content, format) {
   switch (format) {
     case 'json':
-      return normalizeList(JSON.parse(content));
+      return await normalizeList(JSON.parse(content));
     case 'yml': {
       const yaml = await loadYaml();
-      return normalizeList(yaml.load(content));
+      return await normalizeList(yaml.load(content));
     }
     case 'csv': {
       const XLSX = await loadXlsx();
       const wb = XLSX.read(content, { type: 'string' });
       const ws = wb.Sheets[wb.SheetNames[0]];
-      return normalizeList(XLSX.utils.sheet_to_json(ws, { defval: '' }));
+      return await normalizeList(XLSX.utils.sheet_to_json(ws, { defval: '' }));
     }
     case 'xlsx': {
       const XLSX = await loadXlsx();
       const wb = XLSX.read(content, { type: 'array' });
       const ws = wb.Sheets[wb.SheetNames[0]];
-      return normalizeList(XLSX.utils.sheet_to_json(ws, { defval: '' }));
+      return await normalizeList(XLSX.utils.sheet_to_json(ws, { defval: '' }));
     }
     default:
       throw new Error(`不支援的格式：${format}`);
