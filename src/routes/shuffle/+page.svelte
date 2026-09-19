@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { HISTORY_LIMIT, makeId, shuffle, parseTags, formatTime } from '$lib/data/shuffle.js';
+  import { HISTORY_LIMIT, makeId, shuffle, parseTags, formatTime, preloadShuffleWasm } from '$lib/data/shuffle.js';
   import { FORMAT_META, serialize, deserialize } from '$lib/data/shuffleIO.js';
   import CloseIcon from '$lib/components/icons/CloseIcon.svelte';
   import ShuffleHistoryEntry from '$lib/components/ShuffleHistoryEntry.svelte';
@@ -21,6 +21,7 @@
 
   let currentResult = $state([]); // 上次排序結果（{title, note, tags}[]）
   let hasShuffled = $state(false);
+  let shuffling = $state(false);
 
   // 歷史：{ id, time, result: {title, note, tags}[], count }
   let history = $state([]);
@@ -41,6 +42,7 @@
   const clipboardOk = $derived(FORMAT_META[ioFormat].clipboard);
 
   let dataLoaded = false; // 非反應式守衛
+  let addingOption = $state(false);
 
   // 所有出現過的標籤（去重）
   const allTags = $derived([...new Set(options.flatMap(o => o.tags))]);
@@ -70,6 +72,7 @@
       }
     } catch {}
     dataLoaded = true;
+    void preloadShuffleWasm().catch((error) => console.error('rust-shuffle WASM preload failed', error));
   });
 
   $effect(() => {
@@ -85,23 +88,40 @@
     activeFilters = activeFilters.filter(t => tags.has(t));
   }
 
-  function addOption() {
-    if (newTitle.trim() === '') return;
-    const now = Date.now();
-    options = [
-      ...options,
-      {
-        id: makeId(),
-        title: newTitle.trim(),
-        note: newNote.trim(),
-        tags: parseTags(newTagsStr),
-        createdAt: now,
-        updatedAt: now,
-      },
-    ];
-    newTitle = '';
-    newNote = '';
-    newTagsStr = '';
+  async function addOption() {
+    if (addingOption) return;
+
+    const titleInput = newTitle;
+    const noteInput = newNote;
+    const tagsInput = newTagsStr;
+    const title = titleInput.trim();
+    if (title === '') return;
+
+    addingOption = true;
+    try {
+      const id = makeId();
+      const now = Date.now();
+      const tags = await parseTags(tagsInput);
+
+      options = [
+        ...options,
+        {
+          id,
+          title,
+          note: noteInput.trim(),
+          tags,
+          createdAt: now,
+          updatedAt: now,
+        },
+      ];
+
+      // WASM 首次載入期間使用者可能已開始輸入下一筆，只清除本次提交仍未被改動的欄位。
+      if (newTitle === titleInput) newTitle = '';
+      if (newNote === noteInput) newNote = '';
+      if (newTagsStr === tagsInput) newTagsStr = '';
+    } finally {
+      addingOption = false;
+    }
   }
 
   function startEdit(o) {
@@ -111,20 +131,37 @@
     editTagsStr = o.tags.join(', ');
   }
 
-  function commitEdit() {
+  async function commitEdit() {
     const id = editingId;
-    if (editTitle.trim() === '') {
+    const titleInput = editTitle;
+    const noteInput = editNote;
+    const tagsInput = editTagsStr;
+    const title = titleInput.trim();
+
+    if (title === '') {
       // 標題清空 = 刪除
       options = options.filter(o => o.id !== id);
-    } else {
-      const tags = parseTags(editTagsStr);
-      options = options.map(o =>
-        o.id === id
-          ? { ...o, title: editTitle.trim(), note: editNote.trim(), tags, updatedAt: Date.now() }
-          : o
-      );
+      if (editingId === id) editingId = null;
+      pruneFilters();
+      return;
     }
-    editingId = null;
+
+    const tags = await parseTags(tagsInput);
+    options = options.map(o =>
+      o.id === id
+        ? { ...o, title, note: noteInput.trim(), tags, updatedAt: Date.now() }
+        : o
+    );
+
+    // 等待 WASM 時若使用者已切換或繼續編輯，不要關閉新的編輯狀態。
+    if (
+      editingId === id &&
+      editTitle === titleInput &&
+      editNote === noteInput &&
+      editTagsStr === tagsInput
+    ) {
+      editingId = null;
+    }
     pruneFilters();
   }
 
@@ -148,15 +185,23 @@
     activeFilters = [];
   }
 
-  function start() {
-    if (!canStart) return;
+  async function start() {
+    if (!canStart || shuffling) return;
+
     const items = validOptions.map(o => ({ title: o.title.trim(), note: o.note.trim(), tags: o.tags }));
-    currentResult = shuffle(items);
-    hasShuffled = true;
-    history = [
-      { id: Date.now(), time: formatTime(Date.now()), result: currentResult, count: currentResult.length },
-      ...history,
-    ].slice(0, HISTORY_LIMIT);
+    shuffling = true;
+    try {
+      const result = await shuffle(items);
+      const now = Date.now();
+      currentResult = result;
+      hasShuffled = true;
+      history = [
+        { id: makeId(), time: formatTime(now), result, count: result.length },
+        ...history,
+      ].slice(0, HISTORY_LIMIT);
+    } finally {
+      shuffling = false;
+    }
   }
 
   function deleteEntry(id) {
@@ -328,7 +373,8 @@
           <button
             type="button"
             onclick={addOption}
-            class="shrink-0 bg-primary-600 hover:bg-primary-700 text-white rounded-full px-5 py-2 text-sm font-medium transition-colors cursor-pointer self-start"
+            disabled={addingOption}
+            class="shrink-0 bg-primary-600 hover:bg-primary-700 text-white rounded-full px-5 py-2 text-sm font-medium transition-colors cursor-pointer self-start disabled:opacity-60 disabled:cursor-not-allowed"
           >新增</button>
         </div>
       </div>
@@ -466,8 +512,8 @@
       <button
         class="font-serif shuffle-btn relative overflow-hidden rounded-full px-14 py-3.5 text-lg font-bold tracking-widest text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-65 disabled:cursor-default transition-all duration-200 shadow-lg shadow-primary-500/30"
         onclick={start}
-        disabled={!canStart}
-      >開始</button>
+        disabled={!canStart || shuffling}
+      >{shuffling ? '排序中…' : '開始'}</button>
       {#if !canStart}
         <p class="font-serif text-xs text-gray-400 tracking-wider">至少需要兩個選項</p>
       {/if}
